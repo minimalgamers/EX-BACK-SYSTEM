@@ -19,9 +19,9 @@
   --text2:#3a3a3a;
   --text3:#777777;
   --text4:#aaaaaa;
-  --accent:#c8f000;
-  --accent2:#d4f52a;
-  --grad:linear-gradient(135deg,#c8f000,#d4f52a);
+  --accent:#ff0080;
+  --accent2:#ff2d9a;
+  --grad:linear-gradient(135deg,#ff0080,#ff2d9a);
   --sidebar-bg:#1c1c1e;
   --sidebar-bg2:#2a2a2c;
   --sidebar-border:rgba(255,255,255,.07);
@@ -84,7 +84,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 .sidebar-phase-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sidebar-text3);padding:0 20px;margin-bottom:8px;margin-top:16px}
 .sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;border-radius:0}
 .sidebar-item:hover{background:var(--sidebar-bg2)}
-.sidebar-item.active{background:rgba(200,240,0,.1)}
+.sidebar-item.active{background:rgba(255,0,128,.1)}
 .sidebar-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--accent);border-radius:0 2px 2px 0}
 .sidebar-item.locked{opacity:.35;cursor:not-allowed}
 .sidebar-item.locked:hover{background:transparent}
@@ -114,40 +114,99 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 .main-content > *{max-width:760px}
 
 @media(max-width:768px){
+  /* Nav */
   .nav-menu-btn{display:flex}
   .nav-phase{display:none}
-  .sidebar{transform:translateX(-100%);width:82vw;max-width:300px;z-index:300;top:58px;transition:transform .28s cubic-bezier(.4,0,.2,1)}
+  .top-nav{padding:0 14px;height:54px}
+  .nav-logo{font-size:12px}
+
+  /* Sidebar drawer */
+  .sidebar{transform:translateX(-100%);width:82vw;max-width:300px;z-index:300;top:54px;transition:transform .28s cubic-bezier(.4,0,.2,1)}
   .sidebar.mobile-open{transform:translateX(0);box-shadow:4px 0 32px rgba(0,0,0,.5)}
   .sidebar-pull{display:flex}
   .sidebar-pull.hidden{opacity:0;pointer-events:none;transition:opacity .2s}
-  .main-content{margin-left:0;padding:20px 16px 100px}
+  .sidebar-item{padding:11px 18px}
+  .sidebar-day-title{font-size:13px}
+
+  /* Main layout */
+  .main-content{margin-left:0;padding:18px 16px 80px}
   .main-content > *{max-width:100%}
-  .day-title-main{font-size:1.9rem;letter-spacing:-.03em}
-  .day-subtitle{font-size:14px}
-  .concept-card{padding:18px 20px}
-  .exercise-card{padding:18px 20px}
-  .reading-card{padding:18px 20px}
-  .reading-text{font-size:14px}
-  .concept-text{font-size:15px}
-  .complete-bar{flex-direction:column;align-items:flex-start;gap:12px}
-  .complete-btn{width:100%;justify-content:center}
+  .app-layout{padding-top:54px}
+
+  /* Day header */
+  .day-header{margin-bottom:24px;padding-bottom:24px}
+  .day-title-main{font-size:1.85rem;letter-spacing:-.03em;line-height:1.08}
+  .day-subtitle{font-size:13px;line-height:1.65}
+  .day-meta{gap:8px;margin-bottom:12px}
+  .day-badge{font-size:10px;padding:4px 10px}
+
+  /* Cards */
+  .concept-card{padding:16px 18px;margin-bottom:20px}
+  .exercise-card{padding:16px 18px;margin-bottom:20px}
+  .reading-card{padding:16px 18px;margin-bottom:20px}
+  .mission-card{padding:16px 18px;margin-bottom:20px}
+  .complete-bar{padding:16px 18px;flex-direction:column;align-items:flex-start;gap:12px}
+
+  /* Typography */
+  .reading-text{font-size:14px;line-height:1.8}
+  .concept-text{font-size:14px;line-height:1.75}
+  .concept-label{font-size:9px}
+  .mission-text{font-size:14px}
+  .mission-title{font-size:17px}
+
+  /* Sections */
+  .section-block{margin-bottom:20px}
+  .section-label{font-size:9px;margin-bottom:12px}
+
+  /* Video */
+  .video-placeholder{aspect-ratio:16/9;border-radius:10px}
+  .video-play{width:44px;height:44px}
+  .video-title{font-size:12px}
+
+  /* Exercise */
   .exercise-options{grid-template-columns:1fr}
-  .welcome-phases{grid-template-columns:1fr}
-  .welcome-title{font-size:2rem}
-  .welcome-body{font-size:14px}
-  .welcome-start-btn{width:100%;justify-content:center}
-  .section-label{font-size:9px}
-  .video-placeholder{aspect-ratio:16/9}
-  .mission-card{padding:18px 20px}
-  .day-header{margin-bottom:28px;padding-bottom:28px}
-  .btn-primary{padding:12px 22px;font-size:13px}
+  .exercise-option{padding:11px 14px;font-size:13px}
+  .exercise-textarea{min-height:80px;font-size:14px}
+  .exercise-q-text{font-size:14px}
+  .exercise-intro{font-size:13px}
+  .btn-primary{padding:12px 20px;font-size:13px;border-radius:8px}
+
+  /* Complete bar */
+  .complete-btn{width:100%;justify-content:center;text-align:center}
+  .complete-title{font-size:14px}
+  .complete-sub{font-size:12px}
+
+  /* Welcome screen */
+  .welcome-screen{padding:32px 0 60px}
+  .welcome-title{font-size:1.9rem;line-height:1.1}
+  .welcome-body{font-size:13px;margin-bottom:32px}
+  .welcome-phases{grid-template-columns:1fr;gap:10px;margin-bottom:32px}
+  .phase-card{padding:16px}
+  .phase-card-title{font-size:16px}
+  .welcome-start-btn{width:100%;justify-content:center;padding:15px}
+  .welcome-eyebrow{font-size:10px}
+
+  /* AI feedback */
+  .ai-feedback{padding:16px 18px}
+  .ai-text{font-size:14px}
+
+  /* Celebration */
+  .celebration-card{padding:36px 28px}
+  .celebration-title{font-size:1.6rem}
+  .celebration-sub{font-size:13px}
+
+  /* Reading highlight */
+  .reading-highlight{padding:12px 16px}
+
+  /* Mission checkbox */
+  .mission-check-label{font-size:13px}
 }
 
 /* ═══ DAY HEADER ═══ */
 .day-header{margin-bottom:40px}
 .day-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .day-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:6px;white-space:nowrap}
-.badge-fase1{background:rgba(200,240,0,.1);color:#6a8000;border:1px solid rgba(200,240,0,.3)}
+.badge-fase1{background:rgba(255,0,128,.07);color:#cc0066;border:1px solid rgba(255,0,128,.2)}
 .badge-fase2{background:rgba(74,222,128,.08);color:#2d7a4f;border:1px solid rgba(74,222,128,.2)}
 .badge-fase3{background:rgba(120,120,120,.08);color:#666;border:1px solid rgba(120,120,120,.2)}
 .day-number-label{font-size:12px;color:var(--text4);font-weight:500;white-space:nowrap}
@@ -164,8 +223,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 
 /* ═══ VIDEO SECTION ═══ */
 .section-block{margin-bottom:28px}
-.section-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;margin-top:8px;display:flex;align-items:center;gap:12px}
+.section-label::before{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(255,0,128,.2))}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to left,transparent,rgba(255,0,128,.2))}
 .video-placeholder{background:#ffffff;border:1px solid #e0e0e0;border-radius:var(--r);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .video-placeholder:hover{border-color:var(--border2);background:var(--bg3)}
 .video-play{width:56px;height:56px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s;box-shadow:0 4px 20px rgba(255,26,94,.25)}
@@ -182,7 +242,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 .reading-text p:last-child{margin-bottom:0}
 .reading-text strong{font-weight:700;color:var(--text)}
 .reading-text em{font-style:italic;color:var(--text3)}
-.reading-highlight{background:rgba(200,240,0,.1);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 var(--r-xs) var(--r-xs) 0;margin:20px 0}
+.reading-highlight{background:rgba(232,168,0,.1);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 var(--r-xs) var(--r-xs) 0;margin:20px 0}
 .reading-highlight p{color:var(--text2);font-weight:600;margin:0}
 
 /* ═══ EXERCISE ═══ */
@@ -204,7 +264,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 .exercise-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .exercise-option{background:#f9f9f9;border:1px solid #e0e0e0;border-radius:var(--r-sm);padding:12px 16px;font-size:14px;color:var(--text3);cursor:pointer;transition:all .2s;user-select:none;font-weight:500}
 .exercise-option:hover{border-color:var(--border2);color:var(--text)}
-.exercise-option.selected{background:rgba(200,240,0,.12);border-color:var(--accent);color:var(--accent)}
+.exercise-option.selected{background:rgba(232,168,0,.1);border-color:var(--accent);color:var(--accent)}
 .exercise-submit{display:flex;align-items:center;gap:10px;margin-top:24px}
 .btn-primary{background:#1a1a1a;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:13px 28px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;letter-spacing:.02em;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(255,26,94,.2)}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,26,94,.3)}
@@ -230,7 +290,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 @keyframes dotPulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
 /* ═══ MISSION ═══ */
-.mission-card{background:linear-gradient(135deg,rgba(200,240,0,.1),rgba(255,87,34,.02));border:1px solid rgba(200,240,0,.15);border-radius:var(--r);padding:28px 32px;margin-bottom:28px;position:relative}
+.mission-card{background:linear-gradient(135deg,rgba(232,168,0,.1),rgba(255,87,34,.02));border:1px solid rgba(232,168,0,.12);border-radius:var(--r);padding:28px 32px;margin-bottom:28px;position:relative}
 .mission-icon{font-size:28px;margin-bottom:14px}
 .mission-title{font-size:20px;font-weight:800;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
 .mission-text{font-size:15px;color:var(--text2);line-height:1.8;font-weight:400;margin-bottom:24px}
