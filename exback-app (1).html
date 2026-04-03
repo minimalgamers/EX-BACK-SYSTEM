@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EX BACK SYSTEM™ — Il tuo programma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#ffffff;
+  --bg2:#f9f9f9;
+  --bg3:#f4f4f4;
+  --bg4:#ececec;
+  --border:#e8e8e8;
+  --border2:#d4d4d4;
+  --text:#111111;
+  --text2:#3a3a3a;
+  --text3:#787878;
+  --text4:#b0b0b0;
+  --pink:#ff1a5e;
+  --orange:#ff5722;
+  --grad:linear-gradient(135deg,#ff1a5e,#ff5722);
+  --accent:#ff1a5e;
+  --accent2:#ff5722;
+  --green:#16a34a;
+  --sans:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  --r:14px;
+  --r-sm:9px;
+  --r-xs:6px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ═══ ACCESS SCREEN ═══ */
+#access-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px}
+.access-card{width:100%;max-width:400px;text-align:center}
+.access-logo{font-size:13px;font-weight:800;letter-spacing:.16em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;margin-bottom:48px}
+.access-title{font-size:clamp(2rem,6vw,2.8rem);font-weight:800;color:var(--text);line-height:1.1;letter-spacing:-.03em;margin-bottom:12px}
+.access-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.access-sub{font-size:14px;color:var(--text3);margin-bottom:40px;line-height:1.7}
+.access-input-wrap{position:relative;margin-bottom:16px}
+.access-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 20px;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--text);letter-spacing:.12em;text-align:center;text-transform:uppercase;outline:none;transition:border-color .3s}
+.access-input::placeholder{color:var(--text4);letter-spacing:.06em;text-transform:none;font-size:14px;font-weight:400}
+.access-input:focus{border-color:var(--pink)}
+.access-btn{width:100%;background:var(--grad);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:15px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;letter-spacing:.04em;box-shadow:0 4px 20px rgba(255,26,94,.2)}
+.access-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(255,26,94,.3)}
+.access-error{font-size:13px;color:var(--pink);margin-top:12px;opacity:0;transition:opacity .3s}
+.access-error.show{opacity:1}
+.access-divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--text4);font-size:12px}
+.access-divider::before,.access-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.access-demo{font-size:12px;color:var(--text3)}
+.access-demo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* ═══ MAIN APP ═══ */
+#app{display:none;min-height:100vh}
+#app.visible{display:block}
+
+/* ═══ TOP NAV ═══ */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+.nav-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-phase{font-size:12px;color:var(--text3);font-weight:500}
+.nav-day{font-size:12px;font-weight:700;color:#fff;background:var(--grad);padding:5px 14px;border-radius:100px}
+
+/* ═══ LAYOUT ═══ */
+.app-layout{min-height:100vh;padding-top:58px}
+@media(max-width:768px){.sidebar{display:none}.sidebar.mobile-open{display:flex}}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar{position:fixed;top:58px;left:0;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:24px 0;display:flex;flex-direction:column}
+.sidebar-section{margin-bottom:8px}
+.sidebar-phase-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);padding:0 20px;margin-bottom:8px;margin-top:16px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;border-radius:0}
+.sidebar-item:hover{background:var(--bg3)}
+.sidebar-item.active{background:var(--bg3)}
+.sidebar-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--grad);border-radius:0 2px 2px 0}
+.sidebar-item.locked{opacity:.35;cursor:not-allowed}
+.sidebar-item.locked:hover{background:transparent}
+.sidebar-day-num{font-size:10px;font-weight:700;color:var(--text4);width:20px;flex-shrink:0;text-align:right}
+.sidebar-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sidebar-day-title{font-size:13px;color:var(--text3);font-weight:400;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-item.active .sidebar-day-title{color:var(--text);font-weight:600}
+.sidebar-check{font-size:12px;color:var(--green)}
+.sidebar-lock{font-size:11px;color:var(--text4)}
+.sidebar-progress{padding:20px;margin-top:auto;border-top:1px solid var(--border)}
+.sidebar-progress-label{font-size:11px;color:var(--text4);margin-bottom:8px}
+.sidebar-progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.sidebar-progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s ease}
+.sidebar-progress-num{font-size:11px;color:var(--text3)}
+
+/* ═══ MAIN CONTENT ═══ */
+.main-content{margin-left:260px;padding:40px 48px;min-height:calc(100vh - 58px);box-sizing:border-box}
+.main-content > *{max-width:760px}
+@media(max-width:768px){.main-content{margin-left:0;padding:24px 20px}
+.main-content > *{max-width:100%}}
+
+/* ═══ DAY HEADER ═══ */
+.day-header{margin-bottom:40px}
+.day-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.day-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:6px;white-space:nowrap}
+.badge-fase1{background:rgba(255,26,94,.08);color:var(--pink);border:1px solid rgba(255,26,94,.2)}
+.badge-fase2{background:rgba(22,163,74,.08);color:#15803d;border:1px solid rgba(22,163,74,.2)}
+.badge-fase3{background:rgba(255,87,34,.08);color:var(--orange);border:1px solid rgba(255,87,34,.2)}
+.day-number-label{font-size:12px;color:var(--text4);font-weight:500;white-space:nowrap}
+.day-title-main{font-size:clamp(2rem,5vw,2.8rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;color:var(--text);margin-bottom:12px}
+.day-title-main em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.day-subtitle{font-size:16px;color:var(--text3);line-height:1.7;max-width:580px}
+
+/* ═══ CONCEPT CARD ═══ */
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden}
+.concept-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:.6}
+.concept-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+.concept-text{font-size:16px;color:var(--text2);line-height:1.8;font-weight:400}
+.concept-text strong{font-weight:700;color:var(--text)}
+
+/* ═══ VIDEO SECTION ═══ */
+.section-block{margin-bottom:28px}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.video-placeholder{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.video-placeholder:hover{border-color:var(--border2);background:var(--bg3)}
+.video-play{width:56px;height:56px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s;box-shadow:0 4px 20px rgba(255,26,94,.25)}
+.video-placeholder:hover .video-play{transform:scale(1.08)}
+.video-play svg{margin-left:3px}
+.video-title{font-size:14px;color:var(--text2);font-weight:600}
+.video-duration{font-size:12px;color:var(--text4)}
+.video-real{width:100%;border-radius:var(--r);border:1px solid var(--border);background:#000;aspect-ratio:16/9;object-fit:cover;display:block}
+
+/* ═══ READING FLASH ═══ */
+.reading-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin-bottom:28px}
+.reading-text{font-size:15px;color:var(--text2);line-height:1.9;font-weight:400}
+.reading-text p{margin-bottom:16px}
+.reading-text p:last-child{margin-bottom:0}
+.reading-text strong{font-weight:700;color:var(--text)}
+.reading-text em{font-style:italic;color:var(--text3)}
+.reading-highlight{background:rgba(255,26,94,.04);border-left:2px solid var(--pink);padding:14px 18px;border-radius:0 var(--r-xs) var(--r-xs) 0;margin:20px 0}
+.reading-highlight p{color:var(--text2);font-weight:600;margin:0}
+
+/* ═══ EXERCISE ═══ */
+.exercise-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin-bottom:28px}
+.exercise-intro{font-size:14px;color:var(--text3);line-height:1.7;margin-bottom:24px}
+.exercise-question{margin-bottom:20px}
+.exercise-q-text{font-size:15px;color:var(--text);font-weight:600;margin-bottom:10px}
+.exercise-q-sub{font-size:13px;color:var(--text3);margin-bottom:12px}
+.exercise-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-family:var(--sans);font-size:14px;color:var(--text);line-height:1.6;resize:vertical;min-height:100px;outline:none;transition:border-color .3s}
+.exercise-textarea:focus{border-color:var(--pink)}
+.exercise-textarea::placeholder{color:var(--text4)}
+.exercise-slider-wrap{margin-bottom:16px}
+.exercise-slider-label{display:flex;justify-content:space-between;margin-bottom:8px}
+.exercise-slider-name{font-size:14px;color:var(--text2);font-weight:400}
+.exercise-slider-val{font-size:14px;font-weight:700;min-width:24px;text-align:right;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.exercise-slider{width:100%;-webkit-appearance:none;appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+.exercise-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--grad);border-radius:50%;cursor:pointer;transition:transform .2s;box-shadow:0 2px 8px rgba(255,26,94,.25)}
+.exercise-slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.exercise-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.exercise-option{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;font-size:14px;color:var(--text3);cursor:pointer;transition:all .2s;user-select:none;font-weight:500}
+.exercise-option:hover{border-color:var(--border2);color:var(--text)}
+.exercise-option.selected{background:rgba(255,26,94,.05);border-color:var(--pink);color:var(--pink)}
+.exercise-submit{display:flex;align-items:center;gap:10px;margin-top:24px}
+.btn-primary{background:var(--grad);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:13px 28px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;letter-spacing:.02em;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(255,26,94,.2)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,26,94,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-secondary{background:transparent;color:var(--text3);font-family:var(--sans);font-size:14px;font-weight:500;padding:13px 20px;border-radius:100px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.btn-secondary:hover{color:var(--text);border-color:var(--border2)}
+
+/* ═══ AI FEEDBACK ═══ */
+.ai-feedback{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-top:20px;display:none}
+.ai-feedback.show{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ai-feedback-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ai-avatar{width:28px;height:28px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0}
+.ai-name{font-size:12px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ai-label{font-size:11px;color:var(--text4)}
+.ai-text{font-size:15px;color:var(--text2);line-height:1.8;font-weight:400}
+.ai-text strong{font-weight:700;color:var(--text)}
+.ai-loading{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:14px}
+.ai-dots{display:flex;gap:4px}
+.ai-dot{width:5px;height:5px;background:var(--pink);border-radius:50%;animation:dotPulse 1.2s infinite}
+.ai-dot:nth-child(2){animation-delay:.2s}
+.ai-dot:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+
+/* ═══ MISSION ═══ */
+.mission-card{background:linear-gradient(135deg,rgba(255,26,94,.04),rgba(255,87,34,.02));border:1px solid rgba(255,26,94,.12);border-radius:var(--r);padding:28px 32px;margin-bottom:28px;position:relative}
+.mission-icon{font-size:28px;margin-bottom:14px}
+.mission-title{font-size:20px;font-weight:800;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.mission-text{font-size:15px;color:var(--text2);line-height:1.8;font-weight:400;margin-bottom:24px}
+.mission-check-wrap{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.mission-checkbox{width:22px;height:22px;border:1.5px solid var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .3s;flex-shrink:0}
+.mission-checkbox.checked{background:var(--grad);border-color:transparent}
+.mission-checkbox svg{opacity:0;transition:opacity .2s}
+.mission-checkbox.checked svg{opacity:1}
+.mission-check-label{font-size:14px;color:var(--text3);font-weight:500}
+.mission-check-wrap.done .mission-check-label{color:var(--text4);text-decoration:line-through}
+
+/* ═══ COMPLETE DAY ═══ */
+.complete-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.complete-info{display:flex;align-items:center;gap:12px}
+.complete-icon{font-size:20px}
+.complete-title{font-size:15px;font-weight:700;color:var(--text)}
+.complete-sub{font-size:13px;color:var(--text3)}
+.complete-btn{background:var(--grad);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;flex-shrink:0;box-shadow:0 4px 16px rgba(255,26,94,.2)}
+.complete-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,26,94,.3)}
+.complete-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.complete-btn.done{background:var(--bg3);color:var(--green);border:1px solid rgba(22,163,74,.3);cursor:default;box-shadow:none}
+.complete-btn.done:hover{transform:none}
+
+/* ═══ WELCOME SCREEN ═══ */
+.welcome-screen{padding:60px 0}
+.welcome-eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;display:inline-block}
+.welcome-title{font-size:clamp(2.4rem,5vw,3.4rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;color:var(--text);margin-bottom:20px}
+.welcome-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome-body{font-size:16px;color:var(--text3);line-height:1.8;max-width:540px;margin-bottom:48px}
+.welcome-phases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+@media(max-width:600px){.welcome-phases{grid-template-columns:1fr}}
+.phase-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:border-color .2s}
+.phase-card:hover{border-color:var(--border2)}
+.phase-card-num{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.phase-card-title{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:8px;line-height:1.3}
+.phase-card-days{font-size:13px;color:var(--text4);font-weight:500}
+.phase-card-desc{font-size:13px;color:var(--text3);line-height:1.6;margin-top:10px}
+.welcome-start-btn{background:var(--grad);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;padding:16px 40px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 6px 28px rgba(255,26,94,.22)}
+.welcome-start-btn:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,26,94,.32)}
+.welcome-start-btn svg{transition:transform .3s}
+.welcome-start-btn:hover svg{transform:translateX(4px)}
+
+/* ═══ DAY COMPLETE CELEBRATION ═══ */
+.celebration{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px)}
+.celebration.show{display:flex;animation:fadeIn .3s ease}
+.celebration-card{background:var(--bg);border:1px solid var(--border);border-radius:24px;padding:48px 40px;text-align:center;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+.celebration-emoji{font-size:56px;margin-bottom:20px}
+.celebration-title{font-size:2rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:12px}
+.celebration-sub{font-size:15px;color:var(--text3);line-height:1.7;margin-bottom:32px}
+.celebration-btn{background:var(--grad);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;padding:14px 36px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 4px 16px rgba(255,26,94,.2)}
+.celebration-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,26,94,.3)}
+
+/* ═══ REPORT FINALE ═══ */
+.report-screen{padding:60px 0}
+.report-title{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:12px;line-height:1.05}
+.report-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.report-sub{font-size:15px;color:var(--text3);line-height:1.7;max-width:520px;margin-bottom:40px}
+.report-generate-btn{background:var(--grad);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;padding:16px 40px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:10px;margin-bottom:40px;box-shadow:0 6px 28px rgba(255,26,94,.22)}
+.report-generate-btn:hover{transform:translateY(-1px);box-shadow:0 10px 40px rgba(255,26,94,.32)}
+.report-content{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:36px;display:none}
+.report-content.show{display:block;animation:fadeIn .5s ease}
+.report-section{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.report-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.report-section-title{font-size:20px;font-weight:800;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px}
+.report-section-text{font-size:15px;color:var(--text2);line-height:1.9;font-weight:400}
+.report-print-btn{background:transparent;color:var(--text3);font-family:var(--sans);font-size:14px;font-weight:500;padding:12px 20px;border-radius:100px;border:1px solid var(--border);cursor:pointer;transition:all .2s;margin-top:24px}
+.report-print-btn:hover{color:var(--text);border-color:var(--border2)}
+
+/* ═══ MOBILE MENU BTN ═══ */
+.mobile-menu-btn{display:none;position:fixed;bottom:24px;right:24px;z-index:200;background:var(--grad);color:#fff;width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(255,26,94,.3)}
+@media(max-width:768px){.mobile-menu-btn{display:flex}}
+
+/* ═══ FADE ANIM ═══ */
+.fade-in{animation:fadeIn .4s ease}
+</style>
+</head>
+<body>
+
+<!-- ACCESS SCREEN -->
+<div id="access-screen">
+  <div class="access-card">
+    <div class="access-logo">Ex Back System™</div>
+    <h1 class="access-title">Bentornato,<br><em>è ora di agire.</em></h1>
+    <p class="access-sub">Inserisci il codice di accesso che hai ricevuto via email dopo l'acquisto.</p>
+    <div class="access-input-wrap">
+      <input class="access-input" id="access-code" type="text" placeholder="Es. EBS-X7K2M" maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <button class="access-btn" onclick="checkAccess()">Accedi al programma →</button>
+    <p class="access-error" id="access-error">Codice non valido. Controlla l'email di acquisto.</p>
+    <div class="access-divider">oppure</div>
+    <p class="access-demo">Non hai il codice? <span onclick="demoAccess()">Accedi con la demo</span></p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <div class="nav-logo">Ex Back <span>System™</span></div>
+    <div class="nav-right">
+      <span class="nav-phase" id="nav-phase-label">Fase 1 — Reset</span>
+      <span class="nav-day" id="nav-day-label">Giorno 1</span>
+    </div>
+  </nav>
+
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div id="sidebar-days"></div>
+      <div class="sidebar-progress">
+        <div class="sidebar-progress-label">Progresso totale</div>
+        <div class="sidebar-progress-bar"><div class="sidebar-progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="sidebar-progress-num" id="progress-num">0 di 21 giorni completati</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content" id="main-content">
+      <!-- Content injected by JS -->
+    </main>
+
+  </div>
+
+</div>
+
+<!-- MOBILE MENU -->
+<button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
+
+<!-- CELEBRATION OVERLAY -->
+<div class="celebration" id="celebration">
+  <div class="celebration-card">
+    <div class="celebration-emoji" id="cel-emoji">🎉</div>
+    <h2 class="celebration-title" id="cel-title">Giorno completato!</h2>
+    <p class="celebration-sub" id="cel-sub">Stai costruendo qualcosa di reale. Torna domani per il prossimo giorno.</p>
+    <button class="celebration-btn" onclick="closeCelebration()">Continua →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATI DEI 21 GIORNI
+// ═══════════════════════════════════════════
+const DAYS_DATA = [
+  {
+    num:1, phase:1, icon:"🛑", title:"Fermati",
+    subtitle:"Il primo e più difficile passo: smettere di fare danni.",
+    concept:"Dopo una rottura il tuo cervello produce cortisolo — l'ormone dello stress — e ti spinge ad agire in modo irrazionale. Ogni messaggio che mandi adesso, ogni chiamata, ogni like ai suoi post <strong>abbassa il tuo valore</strong> agli occhi di lei. Il No Contact non è una punizione: è una strategia di protezione.",
+    reading:`<p>Immagina di essere in un negozio. Vedi un prodotto in promozione ovunque, sempre disponibile, in saldo permanente. Quanto lo desideri? Poco. Adesso immagina lo stesso prodotto: disponibile solo per 48 ore, stock limitato, già esaurito in altri negozi. Lo vuoi subito.</p>
+<p>Tu sei quel prodotto. In questo momento sei il prodotto in promozione permanente — sempre disponibile, sempre pronto a rispondere, sempre visibile. <strong>La scarsità crea desiderio.</strong> Non è manipolazione: è come funziona il cervello umano.</p>
+<div class="reading-highlight"><p>Ogni giorno di silenzio è un investimento. Non lo stai ignorando — stai aumentando il tuo valore percepito.</p></div>
+<p>Il No Contact serve anche a te: ti dà spazio per smettere di agire d'istinto e iniziare ad agire con strategia. In questi 7 giorni il tuo unico lavoro è non fare danni. Tutto il resto viene dopo.</p>`,
+    exercise:{
+      intro:"Facciamo una valutazione onesta di partenza. Nessuno ti giudica — devi solo essere onesto con te stesso.",
+      type:"sliders",
+      sliders:[
+        {name:"Quanti messaggi le hai mandato nelle ultime 48 ore?", min:0, max:20, unit:"", labels:["0","5","10","15","20+"]},
+        {name:"Quanto senti l'impulso di contattarla adesso (1=basso, 10=altissimo)?", min:1, max:10, unit:"", labels:["1","3","5","7","10"]},
+        {name:"Hai controllato i suoi social nelle ultime 24 ore?", min:0, max:10, unit:" volte", labels:["Mai","3","5","7","10+"]},
+      ],
+      question:"In una frase: qual è la cosa che ti spinge di più a volerla contattare?",
+      placeholder:"Es. Ho paura che si dimentichi di me, che trovi qualcun altro, che pensi che non mi importi..."
+    },
+    mission:{
+      icon:"🔕",
+      title:"La tua prima mossa",
+      text:"Adesso — non domani — silenzia le notifiche dei suoi profili social. Non bloccarla (è aggressivo e lei lo nota), solo silenzio. Poi scrivi qui sotto quello che avresti voluto scriverle oggi. Sfogati con noi, non con lei.",
+      cta:"Ho silenziato i suoi profili"
+    }
+  },
+  {
+    num:2, phase:1, icon:"🧠", title:"Come pensa lei",
+    subtitle:"Smettila di usare la logica maschile per capire le emozioni femminili.",
+    concept:"Le donne non tornano perché le convinci con le parole. Tornano perché sentono qualcosa. <strong>La logica non convince il cuore femminile</strong> — solo le emozioni lo fanno. Ogni volta che le mandi un messaggio razionale spiegando perché dovreste stare insieme, stai parlando in una lingua che lei non ascolta.",
+    reading:`<p>Gli uomini e le donne elaborano le rotture in modo diverso. L'uomo tende a soffrire dopo — nei giorni e settimane successivi. La donna spesso ha già elaborato il dolore <em>prima</em> di rompere. Questo significa che quando lei ti lascia, nella sua testa è già "guarita".</p>
+<p>Ma il cervello non cancella i ricordi emotivi. Li archivia. E certi trigger — una canzone, un posto, una persona — li riattivano immediatamente. <strong>Il tuo obiettivo non è convincerla. È diventare un trigger positivo.</strong></p>
+<div class="reading-highlight"><p>Non vuoi che pensi "ha ragione, dovremmo stare insieme". Vuoi che pensi "mi manca come mi faceva sentire".</p></div>
+<p>La differenza è sottile ma totale. Una è una decisione razionale, l'altra è una sensazione viscerale. Solo la seconda porta davvero a tornare insieme.</p>`,
+    exercise:{
+      intro:"Analizziamo come stai comunicando con lei — e come dovresti.",
+      type:"mixed",
+      question1:"Qual è stato l'ultimo messaggio che le hai mandato? Riscrivilo qui (anche approssimativamente):",
+      placeholder1:"Es. Ti ho scritto dicendole che dovevamo parlare, che avevamo passato momenti bellissimi e che non capivo perché ci eravamo lasciati...",
+      question2:"Secondo te, quando lei lo ha letto, cosa ha sentito?",
+      options:["Tenerezza, le ho ricordato i bei momenti","Pressione, si è sentita in trappola","Fastidio, era troppo pesante","Indifferenza, non l'ha nemmeno aperto","Non so","Non le ho ancora scritto"],
+    },
+    mission:{
+      icon:"✍️",
+      title:"Esercizio di prospettiva",
+      text:"Scrivi per 5 minuti dal punto di vista di lei. Non cosa pensi tu — cosa pensa lei. Come vive questa situazione, cosa prova, cosa vuole. Mettiti nella sua testa.",
+      cta:"Ho fatto l'esercizio di prospettiva"
+    }
+  },
+  {
+    num:3, phase:1, icon:"💔", title:"Il motivo vero",
+    subtitle:"Ogni rottura ha una ragione superficiale e una ragione reale.",
+    concept:"Lei ti ha dato una spiegazione quando ha rotto. Forse era 'non ti amo più', forse 'ho bisogno di spazio', forse 'non siamo compatibili'. <strong>Quella è quasi sempre la versione edulcorata del motivo vero.</strong> Il motivo vero è quello che ha smesso di sentire — e finché non lo capisci, non puoi fare nulla di utile.",
+    reading:`<p>Le rotture raramente avvengono per un singolo evento. Si costruiscono nel tempo — strati di piccole delusioni, di bisogni insoddisfatti, di aspettative tradite. L'evento finale è solo la goccia che fa traboccare un vaso già pieno.</p>
+<p>I 5 motivi reali più comuni per cui le donne lasciano:</p>
+<p><strong>1. Perdita di attrazione.</strong> Non necessariamente fisica — l'attrazione si perde quando un uomo smette di essere interessante, imprevedibile, sicuro di sé.</p>
+<p><strong>2. Stagnazione.</strong> La sensazione che la relazione non stia andando da nessuna parte, che il futuro sia uguale al presente.</p>
+<p><strong>3. Bisogno insoddisfatto.</strong> Ogni persona ha bisogni emotivi specifici — di essere vista, di sicurezza, di avventura, di profondità. Se il bisogno primario non viene soddisfatto, la relazione soffoca.</p>
+<p><strong>4. Perdita di rispetto.</strong> Spesso inconscia — quando un uomo smette di avere confini chiari, di avere una spina dorsale, lei smette di rispettarlo. E senza rispetto, non c'è attrazione.</p>
+<div class="reading-highlight"><p>5. Mancanza di emozione. La relazione è diventata "comoda" invece di essere viva. Il comfort senza eccitazione non basta.</p></div>`,
+    exercise:{
+      intro:"Identifica il motivo vero della tua rottura. Ci vuole onestà — ma è il passo più importante di tutto il programma.",
+      type:"options-text",
+      question:"Quale di questi motivi riconosci nella tua storia?",
+      options:["Perdita di attrazione (sono diventato prevedibile/noioso)","Stagnazione (la relazione non cresceva)","Bisogno insoddisfatto (non riuscivo a darle quello che cercava)","Perdita di rispetto (non avevo confini chiari)","Mancanza di emozione (eravamo diventati abitudine)","Più di uno di questi"],
+      question2:"Ora scrivi la verità: cosa hai smesso di fare o di essere durante la relazione?",
+      placeholder2:"Sii onesto. Questa è la cosa più importante che scriverai in questo programma.",
+    },
+    mission:{
+      icon:"🪞",
+      title:"La frase più onesta",
+      text:"Completa questa frase e scrivila da qualche parte fisicamente (non solo qui): \"Ho perso la sua attrazione perché ho smesso di ___________\". Tienila con te. Serve a ricordarti su cosa stai lavorando.",
+      cta:"Ho scritto la mia frase onesta"
+    }
+  },
+  {
+    num:4, phase:1, icon:"📵", title:"Il silenzio che parla",
+    subtitle:"Perché il No Contact funziona — spiegato con la psicologia, non con la speranza.",
+    concept:"Il No Contact non è sperare che lei ti rimpianga seduto sul divano. È un processo psicologico preciso che avviene nel cervello di lei mentre tu sei in silenzio. <strong>Il vuoto che crei deve essere riempito da qualcosa — e quel qualcosa sei tu.</strong>",
+    reading:`<p>Quando interrompi il contatto con qualcuno che faceva parte della tua vita quotidiana, nel suo cervello avviene qualcosa di specifico: l'abitudine viene spezzata. E le abitudini spezzate creano un disagio inconscio che il cervello cerca di risolvere.</p>
+<p>Nelle prime 72 ore lei probabilmente non pensa molto a te — è in modalità "finalmente libera" o "ha fatto la scelta giusta". È normale. Non cambia niente.</p>
+<p>Tra il giorno 4 e il giorno 10 succede qualcosa di diverso: inizia a notare la tua assenza. I piccoli momenti della giornata che prima condivideva con te diventano silenzi. Il cervello inizia a produrre nostalgia — non per la relazione in sé, ma per le <em>sensazioni</em> che provava.</p>
+<div class="reading-highlight"><p>Tra il giorno 10 e il giorno 21 — se tu non hai mandato messaggi disperati — l'assenza si trasforma in curiosità. "Come sta? Cosa sta facendo? Non mi ha cercato?"</p></div>
+<p>La curiosità è il primo passo verso il desiderio. E il desiderio è quello che ti serve. Non puoi accelerare questo processo — puoi solo non sabotarlo.</p>`,
+    exercise:{
+      intro:"Gestire l'impulso di contattarla è la sfida principale di questa settimana. Prepariamoci.",
+      type:"scale-text",
+      scaleLabel:"Quanto è forte il tuo impulso di contattarla in questo momento? (1 = controllabile, 10 = quasi impossibile resistere)",
+      question:"Quando senti l'impulso più forte? In che momento della giornata o in quale situazione?",
+      placeholder:"Es. La sera tardi quando sono solo, quando vedo una sua foto sui social, quando sento una canzone che ascoltavamo insieme...",
+      question2:"Cosa potresti fare fisicamente nei prossimi 5 minuti quando arriva l'impulso, invece di scriverle?",
+      placeholder2:"Es. Uscire a correre, chiamare un amico, fare 30 flessioni, aprire questo sistema e scrivere qui...",
+    },
+    mission:{
+      icon:"📝",
+      title:"Il tuo piano anti-impulso",
+      text:"Quando senti l'impulso di contattarla, apri questo sistema e scrivi nel campo qui sotto quello che avresti scritto a lei. Non la mandarai. Ma la scrivi. Questa sera, se arriva l'impulso, fallo.",
+      cta:"Ho il mio piano anti-impulso"
+    }
+  },
+  {
+    num:5, phase:1, icon:"⚡", title:"La dipendenza emotiva",
+    subtitle:"Capisci il vero nemico — e non è lei.",
+    concept:"La dipendenza emotiva è il motivo per cui stai soffrendo così tanto. Non è amore — o non solo. È un meccanismo neurologico simile alla dipendenza da sostanze. <strong>Il tuo cervello ha imparato ad aspettarsi una dose di dopamina da lei — e ora soffre l'astinenza.</strong> La buona notizia: puoi riprendere il controllo.",
+    reading:`<p>Quando sei in una relazione, il tuo cervello si abitua a ricevere gratificazione da una fonte specifica — lei. Un messaggio, una risata, un abbraccio — ogni interazione positiva rilascia dopamina. Nel tempo, il tuo sistema di ricompensa diventa dipendente da quella fonte.</p>
+<p>Quando la relazione finisce, il cervello entra in modalità privazione. Cerca disperatamente di recuperare quella fonte di dopamina — da qui i comportamenti irrazionali: i messaggi multipli, il controllare ossessivamente il telefono, il rivedere le foto.</p>
+<p><strong>Non sei pazzo. Sei in astinenza.</strong> Ed è importante che tu lo capisca perché cambia il modo in cui reagisci ai tuoi impulsi.</p>
+<div class="reading-highlight"><p>La soluzione non è sopprimere le emozioni. È reindirizzare il sistema di ricompensa verso nuove fonti: attività fisiche, obiettivi, relazioni sociali, successi personali.</p></div>
+<p>Ogni volta che fai qualcosa che ti fa sentire bene — un allenamento, una conversazione interessante, un risultato al lavoro — stai letteralmente ricalibrando il tuo cervello. Non è una metafora. È neuroscienza.</p>`,
+    exercise:{
+      intro:"Mappiamo la tua vita prima e dopo la relazione per capire cosa hai perso di te stesso.",
+      type:"before-after",
+      areas:[
+        {label:"Hobby e passioni", before:"Cosa facevi che ti piaceva?", after:"Hai smesso durante la relazione?"},
+        {label:"Amicizie", before:"Con chi uscivi?", after:"Hai perso contatti?"},
+        {label:"Obiettivi personali", before:"Cosa volevi realizzare?", after:"Li hai messi in pausa?"},
+        {label:"Attività fisica", before:"Cosa facevi per il tuo corpo?", after:"Hai rallentato?"},
+      ]
+    },
+    mission:{
+      icon:"🏃",
+      title:"Riattiva una parte di te",
+      text:"Scegli una cosa che facevi prima della relazione e falla oggi. Non domani — oggi. Anche 20 minuti. Non è un ripiego: è il primo passo per diventare di nuovo l'uomo che era attraente per lei.",
+      cta:"Ho fatto la mia attività"
+    }
+  },
+  {
+    num:6, phase:1, icon:"🪞", title:"Chi vuoi diventare",
+    subtitle:"Non vuoi tornare a com'eri. Vuoi diventare meglio.",
+    concept:"L'obiettivo non è tornare insieme così come sei adesso. L'obiettivo è diventare una versione di te così solida, così interessante, così viva, che lei non possa ignorarti — e che tu, onestamente, possa essere orgoglioso di te stesso indipendentemente da lei.",
+    reading:`<p>C'è un concetto che si chiama SMV — Sexual Market Value. Non è una formula fredda: è il modo in cui gli altri ti percepiscono, consciamente e non. Include aspetto fisico, sicurezza, status sociale, ambizione, capacità di creare emozioni.</p>
+<p>La buona notizia: l'SMV non è fisso. È dinamico. Puoi aumentarlo in modo significativo in poche settimane con le azioni giuste. E quando aumenta, succedono due cose: <strong>lei lo nota, anche a distanza.</strong> E tu inizi a sentirti diverso — più solido, meno dipendente dall'approvazione altrui.</p>
+<p>Le 4 aree su cui lavorare in parallelo nelle prossime 2 settimane:</p>
+<p><strong>Corpo.</strong> Non per essere palestrato — per il segnale che dai a te stesso e agli altri. Un uomo che si allena comunica disciplina e cura di sé.</p>
+<p><strong>Vita sociale.</strong> La prova sociale è potentissima. Un uomo con una vita ricca e amici reali è automaticamente più desiderabile.</p>
+<p><strong>Direzione.</strong> Avere un obiettivo — anche piccolo — dà una gravità naturale alla tua presenza.</p>
+<div class="reading-highlight"><p>Stile e presenza. Il modo in cui ti vesti, ti muovi, occupi lo spazio. Piccoli cambiamenti visibili creano una narrativa di trasformazione.</p></div>`,
+    exercise:{
+      intro:"Costruiamo la tua mappa di trasformazione personale. Sii onesto su dove sei e ambizioso su dove vuoi arrivare.",
+      type:"profile-build",
+      dimensions:[
+        {id:"body", label:"Corpo e aspetto", current:"Com'è adesso?", target:"Come vuoi essere tra 21 giorni?"},
+        {id:"social", label:"Vita sociale", current:"Quanto sei isolato?", target:"Cosa vuoi riattivare?"},
+        {id:"direction", label:"Obiettivo/ambizione", current:"Hai un obiettivo chiaro?", target:"Quale obiettivo vuoi avere?"},
+        {id:"style", label:"Stile e presenza", current:"Come ti vesti di solito?", target:"Come vuoi presentarti?"},
+      ]
+    },
+    mission:{
+      icon:"🎯",
+      title:"Scegli una priorità",
+      text:"Di tutte le aree che hai mappato, scegline una sola su cui lavorare nei prossimi 7 giorni. Non tutte — una. La dispersione è il nemico della trasformazione. Quale scegli?",
+      cta:"Ho scelto la mia priorità"
+    }
+  },
+  {
+    num:7, phase:1, icon:"🏆", title:"Fase 1 completata",
+    subtitle:"Sei nel 32% degli uomini che arrivano qui. La maggioranza si è arresa.",
+    concept:"Hai tenuto duro 7 giorni. <strong>Il 68% degli uomini crolla nei primi 3 giorni</strong> — manda un messaggio disperato, chiama in lacrime, si presenta a casa sua. Tu no. Questo non è un dettaglio: è la prova che puoi controllarti. E il controllo è la base di tutto quello che viene dopo.",
+    reading:`<p>Cosa sta succedendo nella sua testa in questo momento? Probabilmente non lo sai — e questo è normale. Ma possiamo fare un'ipotesi ragionata.</p>
+<p>Se nelle prime 48 ore si aspettava un tuo messaggio e non è arrivato, avrà iniziato a chiedersi perché. Se nei giorni successivi hai mantenuto il silenzio, quella domanda è cresciuta. Non è detto che ti abbia contattato — molte donne aspettano, per orgoglio o per testare.</p>
+<p>Quello che conta è che la tua assenza ha avuto un effetto. Non sai quale — ma qualcosa è cambiato rispetto alla settimana scorsa. Il silenzio non è passivo: <strong>sta lavorando per te.</strong></p>
+<div class="reading-highlight"><p>La Fase 2 è quella in cui lavori attivamente su te stesso. Non per lei — per diventare l'uomo che meriti di essere. Ma lei lo noterà lo stesso.</p></div>
+<p>Negli ultimi 7 giorni hai piantato un seme. Nelle prossime 2 settimane lo fai crescere.</p>`,
+    exercise:{
+      intro:"Confrontiamo dove eri il giorno 1 e dove sei adesso. Guarda il progresso reale.",
+      type:"compare",
+      metrics:[
+        {label:"Impulso di contattarla", day1:"Come era il giorno 1?", now:"Com'è adesso?"},
+        {label:"Chiarezza sul motivo della rottura", day1:"Quanto capivi allora?", now:"Quanto capisci adesso?"},
+        {label:"Livello di dipendenza emotiva", day1:"Come ti sentivi il giorno 1?", now:"Come ti senti adesso?"},
+      ],
+      closingQuestion:"In una frase, cos'è cambiato in te in questi 7 giorni?",
+      closingPlaceholder:"Sii specifico. Non 'sto meglio' — cosa è cambiato concretamente nel tuo modo di pensare o di comportarti?",
+    },
+    mission:{
+      icon:"✉️",
+      title:"La lettera a te stesso",
+      text:"Scrivi una lettera breve — da te del giorno 7 a te del giorno 1. Cosa ti diresti? Cosa hai imparato? Cosa vorresti che sapesse? Conservala: la rileggerai al giorno 21 e vedrai quanto sei cambiato.",
+      cta:"Ho scritto la mia lettera"
+    }
+  },
+  // FASE 2
+  {
+    num:8, phase:2, icon:"💪", title:"Il corpo come segnale",
+    subtitle:"Il tuo aspetto fisico è il trailer del film. Deve essere irresistibile.",
+    concept:"Il primo segnale che lei riceverà di te — prima di qualsiasi messaggio — sarà visivo. Una foto sui social, un avvistamento in zona, qualcosa che gli racconta qualcuno. <strong>Quello che vede deve comunicare trasformazione.</strong> Non perché sei superficiale — perché i segnali fisici sono il linguaggio più immediato.",
+    reading:`<p>Non stiamo parlando di diventare un modello in 7 giorni. Stiamo parlando di segnali. Il cervello umano legge i segnali fisici in meno di 200 millisecondi — prima ancora che il pensiero conscio possa intervenire.</p>
+<p>Un taglio di capelli diverso. Un vestito nuovo che ti sta bene. Una postura più eretta. Un viso più riposato perché hai dormito meglio. Ogni piccola cosa manda un messaggio: <em>qualcosa è cambiato.</em></p>
+<p>E il cambiamento è il trigger emotivo più potente che esista. Il cervello umano è programmato per notare le differenze, non le costanti. <strong>Se sei uguale a prima, non attiri attenzione. Se sei diverso, crea curiosità.</strong></p>
+<div class="reading-highlight"><p>Non vuoi che lei pensi "si è sistemato". Vuoi che pensi "com'è possibile che stia così bene?"</p></div>
+<p>Inizia con una cosa. Un taglio di capelli prenota oggi. Un capo di abbigliamento che compri questa settimana. Un allenamento che inizia adesso. Piccole azioni concrete, visibili.</p>`,
+    exercise:{
+      intro:"Costruiamo il tuo piano di trasformazione visiva per i prossimi 7 giorni.",
+      type:"action-plan",
+      categories:[
+        {id:"hair", label:"Capelli", question:"Quando hai fatto l'ultimo taglio? Cosa cambieresti?"},
+        {id:"clothes", label:"Abbigliamento", question:"C'è un capo che sai che ti valorizza? Ne manca uno?"},
+        {id:"fitness", label:"Allenamento", question:"Cosa puoi iniziare questa settimana? Palestra, corsa, sport?"},
+        {id:"grooming", label:"Cura personale", question:"Barba, pelle, profumo — c'è qualcosa da migliorare?"},
+      ]
+    },
+    mission:{
+      icon:"✂️",
+      title:"Un'azione concreta entro 48 ore",
+      text:"Scegli la cosa più visibile che puoi fare nei prossimi 2 giorni e falla. Prenota il taglio, compra il capo, prenota la palestra. Non 'ci penso' — prenota adesso mentre sei qui.",
+      cta:"Ho prenotato / fatto la mia azione"
+    }
+  },
+  {
+    num:9, phase:2, icon:"🌐", title:"Il palcoscenico social",
+    subtitle:"Lei ti guarda — anche se fa finta di no. Cosa vede?",
+    concept:"I social media dopo una rottura sono il tuo palcoscenico passivo. Quello che pubblichi invia messaggi precisi — anche se non parli di lei, anche se non la taggi, anche se non le scrivi. <strong>Ogni post è una finestra sulla tua vita. Deve comunicare esattamente quello che vuoi comunicare.</strong>",
+    reading:`<p>Ci sono tre tipi di presenza social dopo una rottura:</p>
+<p><strong>Il fantasma.</strong> Sparisce. Smette di pubblicare. Questo può funzionare per i primi 7-10 giorni, ma prolungato manda il messaggio sbagliato: che sei distrutto. Non è attraente.</p>
+<p><strong>Il disperato.</strong> Pubblica frasi sul dolore, canzoni tristi, riflessioni sulla vita. Ogni post urla "sto soffrendo". Anche questo non è attraente — e lei lo legge benissimo.</p>
+<p><strong>L'uomo che va avanti.</strong> Pubblica la sua vita — posti, persone, attività. Non mostra che sta bene per farglielo vedere. Sta bene e casualmente si vede. <strong>È una differenza sottile ma enorme nella percezione.</strong></p>
+<div class="reading-highlight"><p>La regola d'oro: pubblica cose che pubblicheresti anche se non ti importasse che lei le vedesse. Quella naturalezza è irresistibile.</p></div>
+<p>Frequenza: 3-4 post a settimana. Troppo poco sembra fantasma, troppo sembra disperato di attenzione.</p>`,
+    exercise:{
+      intro:"Analizziamo la tua presenza social attuale e costruiamo la strategia giusta.",
+      type:"social-audit",
+      questions:[
+        {q:"Negli ultimi 7 giorni, cosa hai pubblicato sui social?", placeholder:"Descrivi i tuoi ultimi post o storie..."},
+        {q:"Se lei vedesse il tuo profilo adesso, cosa penserebbe?", options:["Sta soffrendo e si vede","Non si sa niente di lui — è sparito","Sta andando avanti, interessante","Non ho idea"]},
+        {q:"Qual è il tuo contenuto naturale? Cosa pubblicheresti se non ci fosse questa storia?", placeholder:"Es. Uscite con amici, sport, viaggi, lavoro, cibo, musica..."},
+      ]
+    },
+    mission:{
+      icon:"📸",
+      title:"Un post oggi",
+      text:"Pubblica qualcosa oggi. Non forzato, non riflessivo, non triste. Un momento della tua giornata — un posto, una persona, un'attività. Naturale. Come se la tua vita andasse avanti. Perché va avanti.",
+      cta:"Ho pubblicato"
+    }
+  },
+  {
+    num:10, phase:2, icon:"👥", title:"La tua cerchia",
+    subtitle:"Un uomo con una vita sociale ricca è automaticamente più attraente.",
+    concept:"La solitudine si percepisce — anche a distanza. E la solitudine non è attraente. Non perché sei 'da solo', ma perché segnala che la tua vita si era ridotta a lei. <strong>Riattivare la tua cerchia sociale non è solo per sentirti meglio — è prova sociale in azione.</strong>",
+    reading:`<p>La prova sociale è uno dei principi di influenza più potenti descritti da Robert Cialdini: valutiamo qualcosa come più desiderabile quando altri lo desiderano o lo apprezzano. Vale per i prodotti, per le idee, e vale per le persone.</p>
+<p>Un uomo che vive circondato da amici, che ride, che ha una rete di relazioni reali, è percepito inconsciamente come più di valore. Non perché ha molti amici — ma perché quegli amici <em>scelgono</em> di passare tempo con lui. Questo è un segnale di qualità.</p>
+<p>In molte relazioni lunghe, gli uomini tendono ad isolarsi — meno uscite con gli amici, meno hobby condivisi con altri, meno vita propria. È normale. Ma adesso è il momento di invertire questa tendenza.</p>
+<div class="reading-highlight"><p>Non ti stai "consolando con gli amici". Stai ricostruendo una vita che vale la pena di desiderare.</p></div>`,
+    exercise:{
+      intro:"Mappiamo le tue connessioni sociali e costruiamo un piano di riattivazione.",
+      type:"social-map",
+      question1:"Elenca 5 persone (amici, conoscenti, colleghi) con cui non ti sei visto negli ultimi 2-3 mesi:",
+      placeholder1:"Scrivi i nomi o le iniziali, non importa...",
+      question2:"Di queste 5 persone, quale ti fa più piacere sentire? Perché?",
+      placeholder2:"",
+      question3:"Cosa vi piaceva fare insieme?",
+      placeholder3:"",
+    },
+    mission:{
+      icon:"📱",
+      title:"Rompi il ghiaccio",
+      text:"Manda un messaggio ad almeno 2 persone dalla tua lista. Non una poesia — due righe: 'Ehi, come stai? Ti andrebbe una birra/un caffè questa settimana?'. Semplice. Diretto. Umano.",
+      cta:"Ho mandato i messaggi"
+    }
+  },
+  {
+    num:11, phase:2, icon:"🎯", title:"La tua direzione",
+    subtitle:"Un uomo con una missione è magnetico. Non è un cliché — è la realtà.",
+    concept:"L'ambizione non è solo utile per il successo professionale. È uno dei segnali più potenti di valore maschile. Non perché le donne amino i ricchi — ma perché <strong>un uomo che sa dove sta andando trasmette una certezza interiore che è magnetica.</strong> La direzione è più attraente dell'arrivo.",
+    reading:`<p>C'è una differenza fondamentale tra un uomo che <em>ha</em> un obiettivo e un uomo che <em>cerca</em> un obiettivo. Il primo cammina in modo diverso, parla in modo diverso, occupa lo spazio in modo diverso. Ha una gravità naturale.</p>
+<p>Non serve un obiettivo grandioso. Serve un obiettivo reale — che ti faccia alzare la mattina con uno scopo preciso. Può essere finire un progetto al lavoro, imparare qualcosa di nuovo, migliorare in uno sport, costruire qualcosa. La grandezza non conta. <strong>La chiarezza conta.</strong></p>
+<p>Nelle relazioni, gli uomini spesso smettono di avere obiettivi propri — la relazione diventa l'obiettivo. Quando finisce, si sentono senza scopo. Questo è il momento di riappropriarti della tua direzione personale.</p>
+<div class="reading-highlight"><p>Un obiettivo a 90 giorni è la misura giusta: abbastanza vicino da essere concreto, abbastanza lontano da richiedere disciplina.</p></div>`,
+    exercise:{
+      intro:"Definiamo il tuo obiettivo a 90 giorni. Non in relazione a lei — per te.",
+      type:"goal-builder",
+      areas:[
+        {id:"work", label:"Lavoro / carriera"},
+        {id:"money", label:"Finanze / guadagno"},
+        {id:"health", label:"Salute / fitness"},
+        {id:"skill", label:"Competenza / apprendimento"},
+        {id:"social", label:"Vita sociale / relazioni"},
+        {id:"creative", label:"Creatività / hobby"},
+      ],
+      questions:[
+        {q:"In quale area vuoi fare la differenza nei prossimi 90 giorni?", type:"options"},
+        {q:"Descrivi il risultato specifico che vuoi raggiungere:", placeholder:"Es. Perdere 8 kg, chiudere 3 nuovi clienti, imparare a suonare la chitarra, correre 10km..."},
+        {q:"Qual è la prima azione concreta che puoi fare domani mattina?", placeholder:"Piccola, specifica, fattibile in 30 minuti..."},
+      ]
+    },
+    mission:{
+      icon:"⏰",
+      title:"30 minuti adesso",
+      text:"Dedica 30 minuti oggi all'obiettivo che hai definito. Non domani. Adesso, dopo aver chiuso questo schermo. La disciplina è il miglior antidepressivo — e il segnale più potente di un uomo che vale.",
+      cta:"Ho dedicato il mio tempo"
+    }
+  },
+  {
+    num:12, phase:2, icon:"🧘", title:"Regola le emozioni",
+    subtitle:"Non devi non sentire. Devi imparare a non farti guidare da quello che senti.",
+    concept:"Le emozioni non gestite si trasformano in comportamenti autodistruttivi. Non stiamo chiedendoti di essere un robot — ti stiamo chiedendo di essere il pilota del tuo aereo, non il passeggero. <strong>C'è una differenza enorme tra sentire un'emozione e farsi comandare da un'emozione.</strong>",
+    reading:`<p>Il neuroscienziato Antonio Damasio ha dimostrato che le emozioni non sono il contrario della razionalità — sono necessarie per prendere buone decisioni. Il problema non sono le emozioni in sé: è quando le emozioni forti accedono al controllo motorio e ti fanno fare cose che poi rimpianti.</p>
+<p>Esiste una finestra di 90 secondi. Quando un'emozione intensa arriva — ansia, rabbia, disperazione — le sensazioni fisiche associate durano circa 90 secondi se non le alimenti con pensieri. Dopo 90 secondi, quello che rimane è la tua scelta di continuare a sentirla.</p>
+<p>Tre tecniche pratiche per gestire i picchi emotivi:</p>
+<p><strong>Il movimento fisico.</strong> 20 flessioni, una corsa, 10 minuti di pesi. Il movimento scarica cortisolo e produce endorfine. Non è metafora — è chimica.</p>
+<p><strong>Il distacco osservativo.</strong> Invece di dire "sono disperato", di' a te stesso "osservo una sensazione di disperazione". La distanza linguistica crea distanza emotiva reale.</p>
+<div class="reading-highlight"><p>La scrittura. Scrivere quello che senti — non mandarlo, solo scriverlo — attiva la corteccia prefrontale e riduce l'attività dell'amigdala. Il cervello si calma letteralmente.</p></div>`,
+    exercise:{
+      intro:"Costruiamo il tuo kit di gestione emotiva personalizzato.",
+      type:"emotion-kit",
+      scaleLabel:"In questo momento, su una scala 1-10, quanto dolore emotivo senti?",
+      question1:"Qual è il pensiero che ti torna in testa più spesso?",
+      placeholder1:"Quello che ti gira per la testa quando sei solo...",
+      question2:"Cosa ti ha aiutato in passato a sentirti meglio quando stavi male (anche per altri motivi)?",
+      placeholder2:"Attività, persone, luoghi, abitudini...",
+      question3:"Scrivi qui quello che vorresti dirle in questo momento ma non manderai. Sfogati.",
+      placeholder3:"Questo rimane qui. Non la leggerà mai. Scrivi tutto.",
+    },
+    mission:{
+      icon:"💪",
+      title:"Il protocollo del picco",
+      text:"La prossima volta che senti un'ondata emotiva forte — prima di toccare il telefono — fai 20 flessioni. Se non puoi, cammina per 5 minuti veloci. Spezza il circuito con il corpo. Poi, se vuoi, vieni qui a scrivere.",
+      cta:"Ho il mio protocollo"
+    }
+  },
+  {
+    num:13, phase:2, icon:"🔄", title:"Cosa ricorda di te",
+    subtitle:"Lei non ricorda l'uomo di adesso. Ricorda il meglio di quello che eri.",
+    concept:"Nella memoria emotiva, i momenti intensi vengono ricordati più degli altri. I momenti migliori con te sono ancora nel suo cervello — il compito della Fase 3 è riaccenderli. <strong>Ma prima devi capire quale versione di te era attraente per lei, e riportarla in vita.</strong>",
+    reading:`<p>La psicologia della memoria ci insegna che ricordiamo le esperienze in base al loro picco emotivo e al loro finale — non alla durata. Un anno mediocre con un momento straordinario viene ricordato meglio di due anni piacevoli ma piatti.</p>
+<p>Questo è un vantaggio per te: i momenti migliori della vostra relazione hanno lasciato tracce profonde nel suo sistema emotivo. Non sono spariti. Sono archiviate, in attesa di un trigger giusto.</p>
+<p>Ma c'è un punto critico: <em>sei ancora quell'uomo?</em> O sei diventato una versione più grigia, più dipendente, più disperata di quello che eri nei momenti migliori?</p>
+<div class="reading-highlight"><p>Il tuo obiettivo nelle prossime settimane non è fingere di essere diverso. È ritrovare e amplificare la versione di te che lei amava — quella era reale.</p></div>
+<p>Quella versione esiste ancora. È stata sepolta sotto la dipendenza emotiva e il dolore della rottura. Ma con il lavoro che stai facendo, sta tornando.</p>`,
+    exercise:{
+      intro:"Recuperiamo la versione di te che era irresistibile per lei.",
+      type:"memory-map",
+      question1:"Descrivi 3 momenti in cui ti sentivi al massimo durante la relazione — sicuro, vivo, presente:",
+      placeholder1:"Momenti specifici — non generici. Un posto, un'occasione, una conversazione...",
+      question2:"In quei momenti, cosa stavi facendo nella vita (lavoro, hobby, amici)?",
+      placeholder2:"",
+      question3:"Cosa stava facendo lei che ti rendeva così sicuro? Cosa c'era nell'ambiente?",
+      placeholder3:"",
+      question4:"Di quella versione di te, cosa è ancora presente adesso? Cosa si è perso?",
+      placeholder4:"",
+    },
+    mission:{
+      icon:"⚡",
+      title:"Riaccendi un momento",
+      text:"Fai una cosa concreta oggi che facevi quando eri al meglio durante la relazione. Non per lei — per ritrovare quella versione di te. Anche 30 minuti di qualcosa che ti faceva sentire vivo.",
+      cta:"Ho fatto la mia cosa"
+    }
+  },
+  {
+    num:14, phase:2, icon:"🏆", title:"Fase 2 completata",
+    subtitle:"Due settimane. La tua vita è in movimento. Sei pronto?",
+    concept:"Quattordici giorni. Hai lavorato su te stesso — corpo, mente, vita sociale, direzione. Non è finzione: è reale. <strong>Adesso inizia la Fase 3 — quella che tutti aspettano. Ma prima, devi capire se sei davvero pronto.</strong>",
+    reading:`<p>Molti uomini arrivano a questo punto con una sola domanda: "Posso scriverle?" La risposta dipende da dove sei adesso — non da quanto vuoi farlo.</p>
+<p>Ci sono 3 segnali che indicano che sei pronto per il primo contatto:</p>
+<p><strong>1. Non hai bisogno di farlo.</strong> Vuoi farlo, ma non ne hai bisogno per sentirti bene. Se la tua felicità dipende ancora dalla sua risposta, non sei pronto.</p>
+<p><strong>2. Hai qualcosa di interessante da offrire.</strong> La tua vita è cambiata abbastanza da avere qualcosa di reale su cui costruire una conversazione — non solo "mi manchi".</p>
+<div class="reading-highlight"><p>3. Puoi gestire qualsiasi risposta. Risposta positiva, fredda, nessuna risposta — sei in grado di reagire con equilibrio a tutte e tre.</p></div>
+<p>La valutazione che farai adesso è sincera. Non c'è risposta giusta o sbagliata — c'è solo la tua verità attuale.</p>`,
+    exercise:{
+      intro:"Valutazione di readiness: 8 domande per capire se sei pronto per il primo contatto.",
+      type:"readiness-check",
+      questions:[
+        {q:"Se non rispondesse al tuo messaggio, riusciresti ad aspettare 3 giorni prima di scrivere di nuovo?", options:["Sì, facilmente","Sì, con fatica","Probabilmente no"]},
+        {q:"La tua vita è migliorata concretamente in questi 14 giorni?", options:["Sì, posso elencare cambiamenti specifici","Parzialmente","No, sono uguale a prima"]},
+        {q:"Hai qualcosa di interessante da raccontare (attività, progetto, evento)?", options:["Sì","Qualcosa","No, non mi viene in mente nulla"]},
+        {q:"Se rispondesse in modo freddo, riusciresti a non andare nel panico?", options:["Sì","Forse","No, mi crollerei addosso"]},
+        {q:"Hai ancora bisogno di lei per sentirti bene?", options:["No, sto bene anche senza","Dipende dai momenti","Sì, ancora molto"]},
+        {q:"Hai rispettato il No Contact completo per tutti i 14 giorni?", options:["Sì, completamente","Ho avuto 1-2 scivoloni minori","No, ho mandato messaggi"]},
+        {q:"Se ti dicesse 'non ho intenzione di tornare', riusciresti ad accettarlo?", options:["Sì, sarebbe un dolore gestibile","Con molta difficoltà","No, non riesco neanche a pensarci"]},
+        {q:"Stai considerando di contattarla per lei o per te?", options:["Per vedere dove porta, senza aspettative fisse","Per dirle quanto mi manca","Per convincerla a tornare"]},
+      ]
+    },
+    mission:{
+      icon:"📋",
+      title:"La verifica finale",
+      text:"Rileggi le missioni dei giorni 8-13. Quante hai fatto davvero? Sii onesto. Se ne hai saltate 2 o più, dedica domani a recuperarle prima di procedere alla Fase 3. Il programma funziona solo se lo fai tutto.",
+      cta:"Sono pronto per la Fase 3"
+    }
+  },
+  // FASE 3
+  {
+    num:15, phase:3, icon:"📨", title:"Il primo contatto",
+    subtitle:"Il messaggio più importante che manderai. Fallo bene.",
+    concept:"Il primo messaggio dopo 14 giorni di silenzio è il più delicato di tutto il programma. <strong>Un messaggio sbagliato qui azzera due settimane di lavoro.</strong> Un messaggio giusto riapre una porta che sembrava chiusa per sempre. La differenza è in 3 principi fondamentali.",
+    reading:`<p>I 3 principi del primo contatto:</p>
+<p><strong>1. Breve e leggero.</strong> Non è il momento delle dichiarazioni. Non è il momento di spiegare come ti sei trasformato. Un messaggio corto, naturale, privo di peso emotivo. Meno di 30 parole è l'obiettivo.</p>
+<p><strong>2. Aperto, non chiuso.</strong> Non fare domande dirette che la mettono in una posizione di dover scegliere. Lascia spazio — un'osservazione, una notizia neutra, un riferimento a qualcosa che entrambi conoscete.</p>
+<p><strong>3. Zero aspettative dichiarate.</strong> Niente "mi manchi", niente "possiamo vederci?", niente "voglio parlarti". Quelle cose aumentano la pressione e attivano la sua difesa. Il messaggio deve sembrare naturale, non calcolato — anche se è calcolato.</p>
+<div class="reading-highlight"><p>Esempi che funzionano: un riferimento a qualcosa di specifico che vi univa ("Ho visto che quel posto che ci piaceva ha riaperto"), una notizia neutra su qualcosa di comune, una domanda pratica se avete oggetti/amici in comune.</p></div>
+<p>Esempi che non funzionano: "Mi manchi tanto", "Come stai? (penso sempre a te)", "Ho bisogno di parlarti di noi", qualsiasi riferimento diretto alla relazione.</p>`,
+    exercise:{
+      intro:"Costruiamo insieme il tuo primo messaggio. L'AI lo analizzerà e ti darà un feedback preciso.",
+      type:"message-builder",
+      question1:"Scrivi il messaggio che vorresti mandarle — anche se non è perfetto. Scrivi quello che senti naturale:",
+      placeholder1:"Scrivi qui il tuo primo messaggio...",
+      question2:"Su cosa vorresti basarlo?",
+      options2:["Un interesse/hobby che condividevamo","Un posto o un'esperienza comune","Una notizia o evento neutro","Una domanda pratica (oggetti, amici comuni)","Non so, ho bisogno di idee"],
+      aiPrompt:"Sei un coach di riconquista esperto. Analizza questo messaggio che un uomo vuole mandare alla sua ex. Dai un feedback diretto e costruttivo: cosa funziona, cosa non funziona, e proponi una versione migliorata (massimo 30 parole, leggera, aperta, senza peso emotivo). Sii onesto ma empatico. Rispondi in italiano."
+    },
+    mission:{
+      icon:"📤",
+      title:"Il momento della verità",
+      text:"Manda il messaggio — ma solo se il test del giorno 14 ti ha dato luce verde su almeno 6 delle 8 domande. Altrimenti aspetta ancora 3 giorni e rifai la valutazione. Non avere fretta: un messaggio al momento sbagliato è peggio di nessun messaggio.",
+      cta:"Ho mandato il messaggio"
+    }
+  },
+  {
+    num:16, phase:3, icon:"💬", title:"Gestire la risposta",
+    subtitle:"Qualunque cosa risponda, c'è una mossa giusta. Impara tutte e 4.",
+    concept:"La reazione alla sua risposta è importante quanto il messaggio iniziale. Questo è il momento in cui la maggior parte degli uomini sbaglia — o troppo entusiasta se risponde bene, o nel panico se risponde male. <strong>L'equilibrio emotivo è il segnale più attraente che puoi mandare.</strong>",
+    reading:`<p>I 4 scenari e le mosse ottimali:</p>
+<p><strong>Scenario 1: Risposta positiva e calorosa.</strong> Resistenza è la parola chiave. Non buttarti a capofitto, non rispondere subito, non iniziare a parlare della relazione. Rispondi in modo altrettanto leggero dopo qualche ora. L'entusiasmo eccessivo spaventa — anche quando la risposta è positiva.</p>
+<p><strong>Scenario 2: Risposta fredda o monosillabica.</strong> Non interpretarlo come un rifiuto definitivo. Molte donne testano — vogliono vedere se sei ancora quello dipendente o sei cambiato. Rispondi brevemente, con leggerezza, e non insistere. Lascia che l'assenza faccia il lavoro.</p>
+<p><strong>Scenario 3: Nessuna risposta.</strong> Aspetta 3-5 giorni. Non mandare un secondo messaggio subito — questo è il test più duro. Se dopo 5 giorni non ha risposto, puoi mandare un secondo messaggio molto breve e diverso dal primo. Solo uno. Poi silenzio di nuovo.</p>
+<div class="reading-highlight"><p>Scenario 4: Risposta ostile. Non difenderti, non attaccare. "Ok, capisco" è la risposta più potente che esista. Chiude la porta all'escalation e ti mantiene in posizione di forza.</p></div>`,
+    exercise:{
+      intro:"Prepariamoci per ogni scenario. Simuliamo le risposte e costruiamo le tue contromosse.",
+      type:"scenario-prep",
+      question1:"Ha già risposto? Se sì, descrivi la risposta:",
+      placeholder1:"Copia o descrivi esattamente quello che ha scritto (o 'non ha ancora risposto')...",
+      question2:"Come ti ha fatto sentire quella risposta? Qual è stato il tuo primo impulso?",
+      placeholder2:"",
+      aiPrompt:"Sei un coach di riconquista esperto. Un uomo ti descrive la risposta che ha ricevuto dalla sua ex dopo il primo contatto strategico. Analizza la situazione: che segnale invia quella risposta, qual è la mossa ottimale adesso, e proponi una risposta concreta (se deve rispondere) o un piano di azione (se non deve rispondere ancora). Sii diretto, pratico, empatico. Rispondi in italiano."
+    },
+    mission:{
+      icon:"⏳",
+      title:"La regola del doppio tempo",
+      text:"Se ha risposto: aspetta almeno il doppio del tempo che lei ha impiegato prima di rispondere tu. Ha risposto dopo 2 ore? Aspetta almeno 4. Ha risposto dopo un giorno? Aspetta il giorno dopo. Non è un gioco — è un segnale di equilibrio emotivo.",
+      cta:"Ho la mia strategia di risposta"
+    }
+  },
+  {
+    num:17, phase:3, icon:"🎭", title:"Ricreare l'attrazione",
+    subtitle:"L'attrazione non si chiede. Si provoca. Impara come.",
+    concept:"Non puoi dire a qualcuno di trovarti attraente — come non puoi farti venire la fame a comando. L'attrazione è una risposta emotiva involontaria. <strong>Il tuo compito è creare le condizioni perché quella risposta emerga da sola.</strong>",
+    reading:`<p>Le 3 leve dell'attrazione nelle conversazioni:</p>
+<p><strong>La leggerezza.</strong> Le conversazioni cariche di peso emotivo non creano attrazione — creano disagio. Una conversazione leggera, con umorismo, con ironia, con leggerezza, crea un'associazione positiva. Lei deve associarti a sensazioni piacevoli, non a fatica emotiva.</p>
+<p><strong>L'imprevedibilità.</strong> La prevedibilità è il killer dell'attrazione. Se sa già cosa risponderai, se le conversazioni seguono sempre lo stesso schema, l'interesse si spegne. Sorprendi — con una risposta inaspettata, con un cambio di argomento, con un silenzio strategico.</p>
+<p><strong>La pausa strategica.</strong> Non rispondere subito a ogni messaggio. Non perché tu stia giocando — ma perché stai segnalando che la tua vita è piena di cose interessanti e lei non è l'unica priorità. Questo è il segnale opposto alla dipendenza.</p>
+<div class="reading-highlight"><p>La regola del 70%: sii presente per il 70% del tempo, assente per il 30%. Non sparire — ma non essere sempre disponibile istantaneamente.</p></div>`,
+    exercise:{
+      intro:"Analizziamo la qualità delle tue conversazioni e costruiamo il tuo stile comunicativo.",
+      type:"conversation-audit",
+      question1:"Descrivi come si stanno svolgendo le conversazioni con lei adesso (o come si svolgevano prima della rottura):",
+      placeholder1:"Tono, frequenza, argomenti, chi inizia, chi risponde per ultimo...",
+      question2:"C'è un momento in cui senti di 'perdere punti' — in cui la conversazione cambia tono?",
+      placeholder2:"Cosa succede? Cosa dici che spegne l'energia?",
+      question3:"Nella vita quotidiana (non con lei), pratichi la pausa strategica nelle conversazioni?",
+      options3:["Sì, rispondo spesso con calma","No, rispondo sempre subito","Dipende dalla persona"],
+      aiPrompt:"Sei un coach di riconquista esperto. Un uomo ti descrive le sue conversazioni con la sua ex — tono, dinamiche, momenti in cui perde punti. Analizza quello che descrive e dagli 3 consigli pratici e specifici per migliorare il suo stile comunicativo: come essere più leggero, più imprevedibile, più attraente nelle conversazioni. Esempi concreti dove possibile. Rispondi in italiano."
+    },
+    mission:{
+      icon:"🎯",
+      title:"Pratica la pausa",
+      text:"Oggi, in tutte le conversazioni — con chiunque — aspetta sempre almeno 20 minuti prima di rispondere ai messaggi non urgenti. Allena il muscolo della pausa. Non è maleducazione: è equilibrio.",
+      cta:"Sto praticando la pausa"
+    }
+  },
+  {
+    num:18, phase:3, icon:"🌡️", title:"Alza la temperatura",
+    subtitle:"Dalla chat alla chiamata. Dalla chiamata all'incontro.",
+    concept:"Se la conversazione va bene, è il momento di alzare la posta. Non con dichiarazioni d'amore — con proposte concrete che scalano gradualmente l'intimità. <strong>Ogni step deve sentirsi naturale, non forzato. Se senti resistenza — fai un passo indietro.</strong>",
+    reading:`<p>La scala dell'intimità funziona per step graduali:</p>
+<p><strong>Step 1: Chat leggera.</strong> Quello che stai facendo adesso. Conversazione senza peso.</p>
+<p><strong>Step 2: Chiamata o vocale.</strong> La voce cambia tutto. Crea intimità immediata che il testo non può replicare. Proposta naturale: "Sento che è meglio sentirsi che scrivere — hai 10 minuti?"</p>
+<p><strong>Step 3: Incontro informale.</strong> Non una cena romantica. Un caffè, un aperitivo, qualcosa di casual. "Passo in zona X sabato, se ti va ci prendiamo un caffè." Proposta, non invito solenne.</p>
+<p>I segnali che indicano che lei è pronta per lo step successivo: risponde velocemente, fa domande su di te, usa umorismo, manda messaggi senza motivo specifico, fa riferimento al passato in modo nostalgico.</p>
+<div class="reading-highlight"><p>I segnali che indicano di aspettare: risposte brevi, tone freddo, tempo di risposta lungo, argomenti solo pratici o neutri.</p></div>
+<p>Non forzare mai lo step. Un passo indietro volontario vale più di dieci passi avanti forzati.</p>`,
+    exercise:{
+      intro:"Valutiamo dove siete adesso e qual è il prossimo step giusto.",
+      type:"step-eval",
+      question1:"Descrivi come stanno andando le conversazioni ultimamente — tono, frequenza, energia:",
+      placeholder1:"",
+      scaleLabel1:"Su una scala 1-10, quanto senti che lei è coinvolta positivamente nelle conversazioni?",
+      question2:"Ha fatto uno dei segnali positivi che indicano interesse? (risposte rapide, domande su di te, nostalgia, umorismo)",
+      options2:["Sì, più di uno","Uno o due","Non ancora","Non lo so"],
+      aiPrompt:"Sei un coach di riconquista esperto. Un uomo ti descrive lo stato attuale delle conversazioni con la sua ex dopo il primo contatto. In base alla sua descrizione, digli: a che step dell'escalation si trovano (chat/chiamata/incontro), se è il momento di proporre lo step successivo o aspettare, e come farlo in modo concreto e naturale. Sii preciso e diretto. Rispondi in italiano."
+    },
+    mission:{
+      icon:"📞",
+      title:"La proposta concreta",
+      text:"Se i segnali sono positivi: proponi lo step successivo in modo specifico e non ambiguo. 'Sabato pomeriggio prendo un caffè in zona X alle 17, se ti va passa.' Non 'forse', non 'ci si vede?'. Specifico. Poi aspetta la risposta senza ansia.",
+      cta:"Ho fatto la mia proposta"
+    }
+  },
+  {
+    num:19, phase:3, icon:"🤝", title:"Il primo incontro",
+    subtitle:"Non è una dichiarazione — è una prova. Lei ti valuta. Sii pronto.",
+    concept:"Il primo incontro dopo la rottura non è una cena romantica. È un'audizione. Lei sta valutando inconsciamente: è lo stesso uomo di prima, o è cambiato qualcosa? <strong>Ogni tuo comportamento — postura, argomenti, energia, come gestisci i silenzi — comunica qualcosa.</strong>",
+    reading:`<p>Come prepararsi all'incontro:</p>
+<p><strong>Aspetto.</strong> Il lavoro delle ultime 2 settimane deve vedersi. Non esagerare — non deve sembrare che ci hai messo ore. Ma deve sembrare che ti prendi cura di te.</p>
+<p><strong>Mentalità.</strong> Non sei lì per convincerla di niente. Sei lì per passare del tempo piacevole con qualcuno che conosci. Se arrivi con l'agenda di "devo farla tornare", lei lo sentirà immediatamente.</p>
+<p><strong>Argomenti.</strong> Parla della tua vita — non per farglielo vedere, ma perché hai cose interessanti da dire. Chiedi di lei con curiosità genuina, non per riempire silenzi. Non parlare della relazione a meno che non sia lei a portarla.</p>
+<p><strong>I silenzi.</strong> Non aver paura dei silenzi. Un uomo a disagio nei silenzi è un uomo insicuro. Un uomo comodo nel silenzio è un uomo solido.</p>
+<div class="reading-highlight"><p>Il congedo: alzati tu per primo o proponi tu di andare. Lascia che l'incontro finisca mentre l'energia è alta — non quando si è esaurita. "Mi fa piacere averti visto. Ci sentiamo."</p></div>`,
+    exercise:{
+      intro:"Simuliamo i primi 10 minuti dell'incontro. Preparati alle domande più comuni.",
+      type:"roleplay",
+      scenarios:[
+        {situation:"Lei ti chiede 'Come stai?' — la prima domanda", guidance:"Risposta: breve, positiva, concreta. 'Bene, ho iniziato X / sto lavorando su Y.' Non dire 'bene' e basta. Non dire 'non benissimo, ho pensato molto a noi.'"},
+        {situation:"Cala un silenzio imbarazzante", guidance:"Non riempire il silenzio a tutti i costi. Sorridi. Guarda intorno. 'Bel posto questo.' Semplice. Il silenzio non è emergenza."},
+        {situation:"Lei porta lei stessa l'argomento della relazione", guidance:"Non scappare, non buttarti a capofitto. 'Sì, ho pensato a molte cose in queste settimane. Ma adesso sono qui con te e sto bene.' Poi cambia argomento leggero."},
+        {situation:"L'incontro sta andando benissimo e vuoi prolungarlo", guidance:"Non farlo. Proponi tu di chiudere quando l'energia è alta. 'Devo andare, ma mi ha fatto piacere. Rifacciamo.' Quella frase vale più di due ore in più."},
+      ],
+      question:"C'è una situazione specifica che temi nell'incontro? Scrivila:",
+      placeholder:"Cosa temi che succeda? Come vuoi gestirla?",
+      aiPrompt:"Sei un coach di riconquista esperto. Un uomo ti descrive una situazione che teme nel suo primo incontro con la sua ex. Dagli un consiglio concreto e una risposta/comportamento specifico da adottare in quella situazione. Pratico, diretto, senza giri di parole. Rispondi in italiano."
+    },
+    mission:{
+      icon:"📍",
+      title:"Il posto giusto",
+      text:"Scegli un posto neutro — né troppo romantico né troppo amicale. Caffè o aperitivo, non cena. Durata prevista: 60-90 minuti. Parcheggio o uscita facile — lei deve sentirsi libera di andare quando vuole. Quella libertà la farà restare.",
+      cta:"Ho scelto il posto"
+    }
+  },
+  {
+    num:20, phase:3, icon:"⚖️", title:"Dopo l'incontro",
+    subtitle:"L'incontro è finito. Adesso arriva la parte più difficile.",
+    concept:"L'incontro è andato bene? Perfetto — adesso è il momento più pericoloso. <strong>L'euforia post-incontro spinge a messaggi entusiasti, a dichiarazioni premature, a bruciare tutto quello che hai costruito.</strong> La regola delle 24 ore salva più riconquiste di qualsiasi altra tecnica.",
+    reading:`<p>La psicologia del post-incontro è controintuitiva: più è andato bene, più devi resistere alla tentazione di agire subito.</p>
+<p>Quando un incontro va bene, il tuo cervello produce dopamina — sei euforico, vuoi prolungare quella sensazione, vuoi dirle quanto sei contento, vuoi fissare subito il prossimo appuntamento. <strong>Ogni impulso di questo tipo è un impulso da non seguire nelle prime 24 ore.</strong></p>
+<p>Se l'incontro è andato meno bene del previsto: non è la fine. Un incontro difficile può essere un test. Gestirlo con equilibrio — senza crolli, senza messaggi ansiosi — dice più di mille incontri perfetti.</p>
+<div class="reading-highlight"><p>La regola delle 24 ore: dopo un incontro — buono o meno buono — aspetta 24 ore prima di scrivere. Poi manda un messaggio breve, leggero, senza peso. "Ieri è stato bello. Ci si sente." Fine.</p></div>
+<p>Se è stata lei a scrivere prima delle 24 ore: rispondi, ovviamente. Ma rispondi con leggerezza — non con l'entusiasmo che senti dentro.</p>`,
+    exercise:{
+      intro:"Analizziamo com'è andato l'incontro e definiamo i prossimi passi.",
+      type:"debrief",
+      question1:"Descrivi come è andato l'incontro — tono generale, momenti chiave, come ti sei sentito:",
+      placeholder1:"",
+      question2:"Qual è stato il momento migliore? E il più difficile?",
+      placeholder2:"",
+      question3:"Cosa ha detto o fatto lei che ti ha colpito di più (in positivo o negativo)?",
+      placeholder3:"",
+      scaleLabel:"Su una scala 1-10, quanto sei soddisfatto di come ti sei comportato nell'incontro?",
+      aiPrompt:"Sei un coach di riconquista esperto. Un uomo ti racconta com'è andato il suo primo incontro con la sua ex dopo la rottura. Analizza quello che descrive: quali segnali positivi ci sono, quali attenzioni servono, e qual è il prossimo passo concreto da fare — quando e come scriverle, cosa proporre, cosa evitare. Sii diretto e pratico. Rispondi in italiano."
+    },
+    mission:{
+      icon:"🕐",
+      title:"Le 24 ore di silenzio",
+      text:"Non mandare nessun messaggio nelle prime 6 ore dopo l'incontro. Aspetta che si depositi. Se lei scrive prima, rispondi con leggerezza. Se non scrive, scrivi tu dopo 24 ore: breve, positivo, senza peso. Una riga al massimo.",
+      cta:"Ho aspettato le mie 24 ore"
+    }
+  },
+  {
+    num:21, phase:3, icon:"🌟", title:"Il tuo report finale",
+    subtitle:"21 giorni. È il momento di vedere chi sei diventato.",
+    concept:"Hai completato EX BACK SYSTEM™. Non come chi lo legge — come chi lo vive. <strong>Ogni esercizio, ogni missione, ogni momento difficile in cui hai resistito all'impulso — tutto questo ha costruito qualcosa di reale.</strong> Adesso è il momento di vederlo.",
+    reading:`<p>Tre cose che voglio che tu porti con te — indipendentemente da come va con lei:</p>
+<p><strong>1. Il controllo è attraente.</strong> Non il controllo sugli altri — il controllo su te stesso. Un uomo che sa gestire le proprie emozioni, che non si fa guidare dagli impulsi, che agisce con strategia invece che d'istinto, è un uomo raro. E la rarità è desiderabile.</p>
+<p><strong>2. Il lavoro su te stesso non finisce qui.</strong> Quello che hai iniziato in questi 21 giorni — la palestra, la vita sociale, la direzione, la gestione emotiva — continua. Non perché devi riconquistare lei. Perché meriti di vivere così.</p>
+<div class="reading-highlight"><p>3. Il risultato non è solo lei. Il vero risultato di questo programma è un uomo diverso. Più solido, più consapevole, più capace di costruire relazioni sane — con lei o con qualcun'altra.</p></div>
+<p>Adesso, il tuo report personale. L'AI ha letto tutte le tue risposte in questi 21 giorni — le tue emozioni, i tuoi progressi, le tue difficoltà. Genera ora il tuo profilo completo.</p>`,
+    exercise:{
+      intro:"Genera il tuo report finale personalizzato. L'AI legge tutto quello che hai scritto in questi 21 giorni e crea il tuo documento personale.",
+      type:"final-report",
+      closingQuestion:"Prima di generare il report: in una sola frase, com'è cambiato qualcosa in te in questi 21 giorni?",
+      closingPlaceholder:"La cosa più importante che hai imparato o capito...",
+      aiPrompt:"Sei un coach di riconquista esperto e psicologico. Un uomo ha appena completato un programma di 21 giorni per lavorare su sé stesso dopo una rottura. Hai accesso a tutto quello che ha scritto durante il percorso. Genera un report finale personalizzato che include: 1) Una valutazione del suo profilo psicologico relazionale (stile di attaccamento, punti di forza, aree di crescita), 2) I progressi concreti che emergono dalle sue risposte, 3) Le 3 cose più importanti che ha imparato, 4) I prossimi passi raccomandati — sia per la situazione con lei, sia per la sua crescita personale. Tono: empatico, diretto, onesto. Non sycophantic. Lungo circa 400-500 parole. Rispondi in italiano."
+    },
+    mission:{
+      icon:"✉️",
+      title:"La lettera finale",
+      text:"Rileggiti la lettera che ti sei scritto al giorno 7. Poi scrivi una nuova lettera — da te del giorno 21 a te del giorno 1. Non per lei. Per te. Questo è il documento più importante che uscirai da questo programma.",
+      cta:"Ho scritto la mia lettera finale"
+    }
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATO APPLICAZIONE
+// ═══════════════════════════════════════════
+const VALID_CODES = ["EBS-DEMO","EBS-X7K2M","EBS-A3R9P","EBS-T5L8W","EBS-M2K6N","EBS-Q4J7V"];
+let state = {
+  currentDay: 0, // 0 = welcome screen
+  completedDays: [],
+  missionsDone: [],
+  exerciseData: {},
+  accessCode: '',
+  unlockedDays: 1,
+  startDate: null,
+  userName: ''
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('ebs_state_v2');
+    if (saved) state = {...state, ...JSON.parse(saved)};
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem('ebs_state_v2', JSON.stringify(state)); } catch(e) {}
+}
+
+// ═══════════════════════════════════════════
+// ACCESSO
+// ═══════════════════════════════════════════
+function checkAccess() {
+  const code = document.getElementById('access-code').value.trim().toUpperCase();
+  if (VALID_CODES.includes(code)) {
+    state.accessCode = code;
+    state.startDate = state.startDate || new Date().toISOString();
+    saveState();
+    enterApp();
+  } else {
+    const err = document.getElementById('access-error');
+    err.classList.add('show');
+    setTimeout(() => err.classList.remove('show'), 3000);
+  }
+}
+
+function demoAccess() {
+  state.accessCode = 'EBS-DEMO';
+  state.startDate = state.startDate || new Date().toISOString();
+  // Unlock some days for demo
+  state.unlockedDays = 3;
+  saveState();
+  enterApp();
+}
+
+document.getElementById('access-code').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkAccess();
+});
+
+function enterApp() {
+  document.getElementById('access-screen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.classList.add('visible');
+  updateUnlockedDays();
+  renderSidebar();
+  updateProgress();
+  if (state.currentDay === 0) renderWelcome();
+  else renderDay(state.currentDay);
+}
+
+// ═══════════════════════════════════════════
+// UNLOCK LOGIC (giorno per giorno)
+// ═══════════════════════════════════════════
+function updateUnlockedDays() {
+  if (!state.startDate) return;
+  const start = new Date(state.startDate);
+  const now = new Date();
+  const daysPassed = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+  // Unlock completati + 1 ahead, max daysPassed
+  const maxUnlock = Math.min(daysPassed, 21);
+  const completedUnlock = state.completedDays.length + 1;
+  state.unlockedDays = Math.max(state.unlockedDays, Math.min(maxUnlock, completedUnlock));
+  state.unlockedDays = Math.max(1, state.unlockedDays);
+}
+
+// ═══════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════
+function renderSidebar() {
+  const container = document.getElementById('sidebar-days');
+  const phases = [
+    {num:1, label:"Fase 1 — Reset", days:[1,2,3,4,5,6,7]},
+    {num:2, label:"Fase 2 — Ricostruzione", days:[8,9,10,11,12,13,14]},
+    {num:3, label:"Fase 3 — Riconquista", days:[15,16,17,18,19,20,21]},
+  ];
+  let html = '';
+  phases.forEach(phase => {
+    html += `<div class="sidebar-phase-label">${phase.label}</div>`;
+    phase.days.forEach(dayNum => {
+      const day = DAYS_DATA[dayNum - 1];
+      const isLocked = dayNum > state.unlockedDays;
+      const isDone = state.completedDays.includes(dayNum);
+      const isActive = state.currentDay === dayNum;
+      const lockCls = isLocked ? ' locked' : '';
+      const activeCls = isActive ? ' active' : '';
+      const rightIcon = isDone
+        ? `<span class="sidebar-check">✓</span>`
+        : isLocked
+          ? `<span class="sidebar-lock">🔒</span>`
+          : '';
+      html += `<div class="sidebar-item${lockCls}${activeCls}" onclick="${isLocked ? '' : `goToDay(${dayNum})`}">
+        <span class="sidebar-day-num">${dayNum}</span>
+        <span class="sidebar-icon">${day.icon}</span>
+        <span class="sidebar-day-title">${day.title}</span>
+        ${rightIcon}
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+function updateProgress() {
+  const done = state.completedDays.length;
+  const pct = (done / 21) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-num').textContent = `${done} di 21 giorni completati`;
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function goToDay(dayNum) {
+  if (dayNum > state.unlockedDays) return;
+  state.currentDay = dayNum;
+  saveState();
+  renderDay(dayNum);
+  updateNavLabels(dayNum);
+  renderSidebar();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function updateNavLabels(dayNum) {
+  const day = DAYS_DATA[dayNum - 1];
+  const phaseNames = {1:"Fase 1 — Reset", 2:"Fase 2 — Ricostruzione", 3:"Fase 3 — Riconquista"};
+  document.getElementById('nav-phase-label').textContent = phaseNames[day.phase];
+  document.getElementById('nav-day-label').textContent = `Giorno ${dayNum}`;
+}
+
+function goToWelcome() {
+  state.currentDay = 0;
+  saveState();
+  renderWelcome();
+  renderSidebar();
+}
+
+// ═══════════════════════════════════════════
+// WELCOME SCREEN
+// ═══════════════════════════════════════════
+function renderWelcome() {
+  const main = document.getElementById('main-content');
+  const done = state.completedDays.length;
+  main.innerHTML = `
+    <div class="welcome-screen fade-in">
+      <div class="welcome-eyebrow">Il tuo programma personale</div>
+      <h1 class="welcome-title">21 giorni per<br><em>riconquistare</em><br>chi ami.</h1>
+      <p class="welcome-body">Ogni giorno un video, un approfondimento, un esercizio interattivo e una missione concreta. Non teoria — azione. Non speranza — strategia.</p>
+      <div class="welcome-phases">
+        <div class="phase-card">
+          <div class="phase-card-num" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Fase 1</div>
+          <div class="phase-card-title">Reset</div>
+          <div class="phase-card-days">Giorni 1–7</div>
+          <div class="phase-card-desc">Ferma il danno. Interrompi i comportamenti che allontanano. Riprendi il controllo di te stesso.</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-card-num" style="color:#15803d">Fase 2</div>
+          <div class="phase-card-title">Ricostruzione</div>
+          <div class="phase-card-days">Giorni 8–14</div>
+          <div class="phase-card-desc">Lavora su te stesso. Diventa la versione di te che lei non riesce a ignorare.</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-card-num" style="color:var(--orange)">Fase 3</div>
+          <div class="phase-card-title">Riconquista</div>
+          <div class="phase-card-days">Giorni 15–21</div>
+          <div class="phase-card-desc">Muovi le pedine. Primo contatto, conversazioni strategiche, primo incontro.</div>
+        </div>
+      </div>
+      <button class="welcome-start-btn" onclick="goToDay(${done > 0 ? Math.min(done + 1, 21) : 1})">
+        ${done > 0 ? `Continua dal giorno ${Math.min(done + 1, 21)}` : 'Inizia il Giorno 1'}
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// RENDER DAY
+// ═══════════════════════════════════════════
+function renderDay(dayNum) {
+  const d = DAYS_DATA[dayNum - 1];
+  const main = document.getElementById('main-content');
+  const phaseBadge = ['','badge-fase1','badge-fase2','badge-fase3'][d.phase];
+  const phaseNames = ['','Fase 1 — Reset','Fase 2 — Ricostruzione','Fase 3 — Riconquista'];
+  const isDone = state.completedDays.includes(dayNum);
+  const isLast = dayNum === 21;
+
+  main.innerHTML = `
+    <div class="fade-in">
+      <!-- HEADER -->
+      <div class="day-header">
+        <div class="day-meta">
+          <span class="day-badge ${phaseBadge}">${phaseNames[d.phase]}</span>
+          <span class="day-number-label">Giorno ${d.num} di 21</span>
+        </div>
+        <h1 class="day-title-main">${d.title}</h1>
+        <p class="day-subtitle">${d.subtitle}</p>
+      </div>
+
+      <!-- CONCEPT -->
+      <div class="concept-card">
+        <div class="concept-label">Il concetto di oggi</div>
+        <p class="concept-text">${d.concept}</p>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="section-block">
+        <div class="section-label">Video del coach</div>
+        <div class="video-placeholder" id="video-${dayNum}" onclick="playVideo(${dayNum})">
+          <div class="video-play">
+            <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div class="video-title">Giorno ${dayNum} — ${d.title}</div>
+          <div class="video-duration">~6 minuti</div>
+        </div>
+      </div>
+
+      <!-- READING -->
+      <div class="section-block">
+        <div class="section-label">Approfondimento</div>
+        <div class="reading-card">
+          <div class="reading-text">${d.reading}</div>
+        </div>
+      </div>
+
+      <!-- EXERCISE -->
+      <div class="section-block">
+        <div class="section-label">Esercizio interattivo</div>
+        <div class="exercise-card" id="exercise-card-${dayNum}">
+          <p class="exercise-intro">${d.exercise.intro}</p>
+          ${renderExercise(d, dayNum)}
+          <div class="exercise-submit">
+            <button class="btn-primary" id="submit-btn-${dayNum}" onclick="submitExercise(${dayNum})">
+              Analizza con l'AI
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="ai-feedback" id="ai-feedback-${dayNum}"></div>
+        </div>
+      </div>
+
+      <!-- MISSION -->
+      <div class="section-block">
+        <div class="section-label">Missione del giorno</div>
+        <div class="mission-card">
+          <div class="mission-icon">${d.mission.icon}</div>
+          <div class="mission-title">${d.mission.title}</div>
+          <p class="mission-text">${d.mission.text}</p>
+          <div class="mission-check-wrap ${isDone ? 'done' : ''}" id="mission-wrap-${dayNum}" onclick="toggleMission(${dayNum})">
+            <div class="mission-checkbox ${isDone ? 'checked' : ''}" id="mission-check-${dayNum}">
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="#1a1200" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="mission-check-label">${isDone ? 'Missione completata ✓' : d.mission.cta}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPLETE BAR -->
+      <div class="complete-bar">
+        <div class="complete-info">
+          <span class="complete-icon">${isDone ? '✅' : '⬜'}</span>
+          <div>
+            <div class="complete-title">${isDone ? 'Giorno ' + dayNum + ' completato!' : 'Segna il giorno come completato'}</div>
+            <div class="complete-sub">${isDone ? 'Torna domani per il giorno ' + Math.min(dayNum+1, 21) : 'Fallo solo dopo aver guardato il video e completato l\'esercizio'}</div>
+          </div>
+        </div>
+        <button class="complete-btn ${isDone ? 'done' : ''}" id="complete-btn-${dayNum}"
+          onclick="${isDone ? '' : `completeDay(${dayNum})`}">
+          ${isDone ? '✓ Completato' : (isLast ? 'Completa e genera il report →' : 'Segna come completato →')}
+        </button>
+      </div>
+
+      <div style="height:60px"></div>
+    </div>
+  `;
+
+  // Restore slider values
+  const savedData = state.exerciseData[dayNum] || {};
+  if (savedData.sliders) {
+    savedData.sliders.forEach((val, i) => {
+      const sl = document.getElementById(`slider-${dayNum}-${i}`);
+      if (sl) { sl.value = val; updateSliderVal(dayNum, i, val); }
+    });
+  }
+}
+
+// ═══════════════════════════════════════════
+// RENDER EXERCISE
+// ═══════════════════════════════════════════
+function renderExercise(d, dayNum) {
+  const ex = d.exercise;
+  const type = ex.type;
+
+  if (type === 'sliders') {
+    let html = ex.sliders.map((sl, i) => `
+      <div class="exercise-slider-wrap">
+        <div class="exercise-slider-label">
+          <span class="exercise-slider-name">${sl.name}</span>
+          <span class="exercise-slider-val" id="slider-val-${dayNum}-${i}">${sl.min}</span>
+        </div>
+        <input type="range" class="exercise-slider" id="slider-${dayNum}-${i}" min="${sl.min}" max="${sl.max}" value="${sl.min}"
+          oninput="updateSliderVal(${dayNum}, ${i}, this.value)">
+      </div>
+    `).join('');
+    html += `
+      <div class="exercise-question" style="margin-top:20px">
+        <div class="exercise-q-text">${ex.question}</div>
+        <textarea class="exercise-textarea" id="ex-text-${dayNum}" placeholder="${ex.placeholder}" rows="3"></textarea>
+      </div>
+    `;
+    return html;
+  }
+
+  if (type === 'mixed') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-q1-${dayNum}" placeholder="${ex.placeholder1}" rows="4"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <div class="exercise-options">${ex.options.map((o,i) =>
+          `<div class="exercise-option" id="opt-${dayNum}-${i}" onclick="selectOption(${dayNum}, 'opts', ${i})">${o}</div>`
+        ).join('')}</div>
+      </div>
+    `;
+  }
+
+  if (type === 'options-text') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question}</div>
+        <div class="exercise-options">${ex.options.map((o,i) =>
+          `<div class="exercise-option" id="opt-${dayNum}-${i}" onclick="selectOption(${dayNum}, 'opts', ${i})">${o}</div>`
+        ).join('')}</div>
+      </div>
+      <div class="exercise-question" style="margin-top:16px">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-q2-${dayNum}" placeholder="${ex.placeholder2}" rows="4"></textarea>
+      </div>
+    `;
+  }
+
+  if (type === 'scale-text') {
+    return `
+      <div class="exercise-slider-wrap">
+        <div class="exercise-slider-label">
+          <span class="exercise-slider-name">${ex.scaleLabel}</span>
+          <span class="exercise-slider-val" id="slider-val-${dayNum}-0">5</span>
+        </div>
+        <input type="range" class="exercise-slider" id="slider-${dayNum}-0" min="1" max="10" value="5"
+          oninput="updateSliderVal(${dayNum}, 0, this.value)">
+      </div>
+      <div class="exercise-question" style="margin-top:16px">
+        <div class="exercise-q-text">${ex.question}</div>
+        <textarea class="exercise-textarea" id="ex-q1-${dayNum}" placeholder="${ex.placeholder}" rows="3"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-q2-${dayNum}" placeholder="${ex.placeholder2}" rows="3"></textarea>
+      </div>
+    `;
+  }
+
+  if (type === 'before-after') {
+    return ex.areas.map((area, i) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${area.label}</div>
+        <div class="exercise-q-sub">${area.before}</div>
+        <textarea class="exercise-textarea" id="ex-ba-${dayNum}-${i}a" placeholder="Prima..." rows="2" style="margin-bottom:8px"></textarea>
+        <div class="exercise-q-sub">${area.after}</div>
+        <textarea class="exercise-textarea" id="ex-ba-${dayNum}-${i}b" placeholder="Dopo..." rows="2"></textarea>
+      </div>
+    `).join('');
+  }
+
+  if (type === 'profile-build') {
+    return ex.dimensions.map((dim, i) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${dim.label}</div>
+        <div class="exercise-q-sub">${dim.current}</div>
+        <textarea class="exercise-textarea" id="ex-pb-${dayNum}-${i}a" placeholder="Adesso..." rows="2" style="margin-bottom:8px"></textarea>
+        <div class="exercise-q-sub">${dim.target}</div>
+        <textarea class="exercise-textarea" id="ex-pb-${dayNum}-${i}b" placeholder="Obiettivo..." rows="2"></textarea>
+      </div>
+    `).join('');
+  }
+
+  if (type === 'compare') {
+    let html = ex.metrics.map((m, i) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${m.label}</div>
+        <div class="exercise-q-sub">${m.day1}</div>
+        <textarea class="exercise-textarea" id="ex-cmp-${dayNum}-${i}a" placeholder="" rows="2" style="margin-bottom:8px"></textarea>
+        <div class="exercise-q-sub">${m.now}</div>
+        <textarea class="exercise-textarea" id="ex-cmp-${dayNum}-${i}b" placeholder="" rows="2"></textarea>
+      </div>
+    `).join('');
+    html += `
+      <div class="exercise-question" style="margin-top:16px">
+        <div class="exercise-q-text">${ex.closingQuestion}</div>
+        <textarea class="exercise-textarea" id="ex-closing-${dayNum}" placeholder="${ex.closingPlaceholder}" rows="3"></textarea>
+      </div>
+    `;
+    return html;
+  }
+
+  if (type === 'action-plan') {
+    return ex.categories.map((cat, i) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${cat.label}</div>
+        <div class="exercise-q-sub">${cat.question}</div>
+        <textarea class="exercise-textarea" id="ex-ap-${dayNum}-${i}" placeholder="Le tue riflessioni..." rows="2"></textarea>
+      </div>
+    `).join('');
+  }
+
+  if (type === 'social-audit') {
+    let html = '';
+    ex.questions.forEach((q, i) => {
+      if (q.options) {
+        html += `<div class="exercise-question">
+          <div class="exercise-q-text">${q.q}</div>
+          <div class="exercise-options">${q.options.map((o, j) =>
+            `<div class="exercise-option" id="opt-sa-${dayNum}-${i}-${j}" onclick="selectOptionGroup(${dayNum}, 'sa-${i}', ${j})">${o}</div>`
+          ).join('')}</div>
+        </div>`;
+      } else {
+        html += `<div class="exercise-question">
+          <div class="exercise-q-text">${q.q}</div>
+          <textarea class="exercise-textarea" id="ex-sa-${dayNum}-${i}" placeholder="${q.placeholder}" rows="3"></textarea>
+        </div>`;
+      }
+    });
+    return html;
+  }
+
+  if (type === 'social-map') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-sm-${dayNum}-1" placeholder="${ex.placeholder1}" rows="4"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-sm-${dayNum}-2" placeholder="${ex.placeholder2}" rows="2"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question3}</div>
+        <textarea class="exercise-textarea" id="ex-sm-${dayNum}-3" placeholder="${ex.placeholder3}" rows="2"></textarea>
+      </div>
+    `;
+  }
+
+  if (type === 'goal-builder') {
+    let html = `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.questions[0].q}</div>
+        <div class="exercise-options">${ex.areas.map((a, i) =>
+          `<div class="exercise-option" id="opt-gb-${dayNum}-${i}" onclick="selectOptionGroup(${dayNum}, 'gb', ${i})">${a.label}</div>`
+        ).join('')}</div>
+      </div>
+    `;
+    ex.questions.slice(1).forEach((q, i) => {
+      html += `<div class="exercise-question">
+        <div class="exercise-q-text">${q.q}</div>
+        <textarea class="exercise-textarea" id="ex-gb-${dayNum}-${i}" placeholder="${q.placeholder}" rows="3"></textarea>
+      </div>`;
+    });
+    return html;
+  }
+
+  if (type === 'emotion-kit') {
+    return `
+      <div class="exercise-slider-wrap">
+        <div class="exercise-slider-label">
+          <span class="exercise-slider-name">${ex.scaleLabel}</span>
+          <span class="exercise-slider-val" id="slider-val-${dayNum}-0">5</span>
+        </div>
+        <input type="range" class="exercise-slider" id="slider-${dayNum}-0" min="1" max="10" value="5"
+          oninput="updateSliderVal(${dayNum}, 0, this.value)">
+      </div>
+      <div class="exercise-question" style="margin-top:16px">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-ek-${dayNum}-1" placeholder="${ex.placeholder1}" rows="3"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-ek-${dayNum}-2" placeholder="${ex.placeholder2}" rows="2"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question3}</div>
+        <textarea class="exercise-textarea" id="ex-ek-${dayNum}-3" placeholder="${ex.placeholder3}" rows="4"></textarea>
+      </div>
+    `;
+  }
+
+  if (type === 'memory-map') {
+    return [ex.question1, ex.question2, ex.question3, ex.question4].map((q, i) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${q}</div>
+        <textarea class="exercise-textarea" id="ex-mm-${dayNum}-${i}" placeholder="${[ex.placeholder1,ex.placeholder2,ex.placeholder3,ex.placeholder4][i]}" rows="3"></textarea>
+      </div>
+    `).join('');
+  }
+
+  if (type === 'readiness-check') {
+    return ex.questions.map((q, qi) => `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${qi+1}. ${q.q}</div>
+        <div class="exercise-options">${q.options.map((o, oi) =>
+          `<div class="exercise-option" id="opt-rc-${dayNum}-${qi}-${oi}" onclick="selectOptionGroup(${dayNum}, 'rc-${qi}', ${oi})">${o}</div>`
+        ).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  if (type === 'message-builder') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-mb-${dayNum}-1" placeholder="${ex.placeholder1}" rows="3"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <div class="exercise-options">${ex.options2.map((o, i) =>
+          `<div class="exercise-option" id="opt-mb-${dayNum}-${i}" onclick="selectOptionGroup(${dayNum}, 'mb', ${i})">${o}</div>`
+        ).join('')}</div>
+      </div>
+    `;
+  }
+
+  if (type === 'scenario-prep') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-sp-${dayNum}-1" placeholder="${ex.placeholder1}" rows="3"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-sp-${dayNum}-2" placeholder="${ex.placeholder2}" rows="2"></textarea>
+      </div>
+    `;
+  }
+
+  if (type === 'conversation-audit') {
+    let html = `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-ca-${dayNum}-1" placeholder="${ex.placeholder1}" rows="3"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-ca-${dayNum}-2" placeholder="${ex.placeholder2}" rows="2"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question3}</div>
+        <div class="exercise-options">${ex.options3.map((o, i) =>
+          `<div class="exercise-option" id="opt-ca-${dayNum}-${i}" onclick="selectOptionGroup(${dayNum}, 'ca', ${i})">${o}</div>`
+        ).join('')}</div>
+      </div>
+    `;
+    return html;
+  }
+
+  if (type === 'step-eval') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-se-${dayNum}-1" placeholder="${ex.placeholder1}" rows="3"></textarea>
+      </div>
+      <div class="exercise-slider-wrap" style="margin-top:16px">
+        <div class="exercise-slider-label">
+          <span class="exercise-slider-name">${ex.scaleLabel1}</span>
+          <span class="exercise-slider-val" id="slider-val-${dayNum}-0">5</span>
+        </div>
+        <input type="range" class="exercise-slider" id="slider-${dayNum}-0" min="1" max="10" value="5"
+          oninput="updateSliderVal(${dayNum}, 0, this.value)">
+      </div>
+      <div class="exercise-question" style="margin-top:16px">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <div class="exercise-options">${ex.options2.map((o, i) =>
+          `<div class="exercise-option" id="opt-se-${dayNum}-${i}" onclick="selectOptionGroup(${dayNum}, 'se', ${i})">${o}</div>`
+        ).join('')}</div>
+      </div>
+    `;
+  }
+
+  if (type === 'roleplay') {
+    let html = `<div style="margin-bottom:20px">`;
+    ex.scenarios.forEach((sc, i) => {
+      html += `<div style="background:var(--bg4);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:500;color:var(--accent);margin-bottom:6px">Scenario ${i+1}: ${sc.situation}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">${sc.guidance}</div>
+      </div>`;
+    });
+    html += `</div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question}</div>
+        <textarea class="exercise-textarea" id="ex-rp-${dayNum}-1" placeholder="${ex.placeholder}" rows="3"></textarea>
+      </div>
+    `;
+    return html;
+  }
+
+  if (type === 'debrief') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question1}</div>
+        <textarea class="exercise-textarea" id="ex-db-${dayNum}-1" placeholder="${ex.placeholder1}" rows="4"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question2}</div>
+        <textarea class="exercise-textarea" id="ex-db-${dayNum}-2" placeholder="${ex.placeholder2}" rows="2"></textarea>
+      </div>
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.question3}</div>
+        <textarea class="exercise-textarea" id="ex-db-${dayNum}-3" placeholder="${ex.placeholder3}" rows="2"></textarea>
+      </div>
+      <div class="exercise-slider-wrap" style="margin-top:16px">
+        <div class="exercise-slider-label">
+          <span class="exercise-slider-name">${ex.scaleLabel}</span>
+          <span class="exercise-slider-val" id="slider-val-${dayNum}-0">7</span>
+        </div>
+        <input type="range" class="exercise-slider" id="slider-${dayNum}-0" min="1" max="10" value="7"
+          oninput="updateSliderVal(${dayNum}, 0, this.value)">
+      </div>
+    `;
+  }
+
+  if (type === 'final-report') {
+    return `
+      <div class="exercise-question">
+        <div class="exercise-q-text">${ex.closingQuestion}</div>
+        <textarea class="exercise-textarea" id="ex-fr-${dayNum}-1" placeholder="${ex.closingPlaceholder}" rows="4"></textarea>
+      </div>
+    `;
+  }
+
+  // Generic fallback
+  return `<textarea class="exercise-textarea" id="ex-text-${dayNum}" placeholder="Scrivi qui le tue riflessioni..." rows="4"></textarea>`;
+}
+
+// ═══════════════════════════════════════════
+// EXERCISE INTERACTIONS
+// ═══════════════════════════════════════════
+function updateSliderVal(dayNum, idx, val) {
+  const el = document.getElementById(`slider-val-${dayNum}-${idx}`);
+  if (el) el.textContent = val;
+}
+
+function selectOption(dayNum, group, idx) {
+  document.querySelectorAll(`[id^="opt-${dayNum}-"]`).forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById(`opt-${dayNum}-${idx}`);
+  if (el) el.classList.toggle('selected');
+}
+
+function selectOptionGroup(dayNum, group, idx) {
+  document.querySelectorAll(`[id^="opt-${group}-${dayNum}-"], [id^="opt-${group.replace('-','_')}-${dayNum}-"]`).forEach(el => el.classList.remove('selected'));
+  // Match by prefix pattern
+  const prefix = `opt-${group}-${dayNum}-`;
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById(`${prefix}${idx}`);
+  if (el) el.classList.toggle('selected');
+}
+
+// ═══════════════════════════════════════════
+// AI FEEDBACK
+// ═══════════════════════════════════════════
+async function submitExercise(dayNum) {
+  const d = DAYS_DATA[dayNum - 1];
+  const btn = document.getElementById(`submit-btn-${dayNum}`);
+  const feedbackDiv = document.getElementById(`ai-feedback-${dayNum}`);
+
+  // Collect all text inputs
+  const texts = [];
+  document.querySelectorAll(`#exercise-card-${dayNum} textarea`).forEach(ta => {
+    if (ta.value.trim()) texts.push(ta.value.trim());
+  });
+  document.querySelectorAll(`#exercise-card-${dayNum} .exercise-option.selected`).forEach(opt => {
+    texts.push('Opzione selezionata: ' + opt.textContent);
+  });
+  document.querySelectorAll(`#exercise-card-${dayNum} .exercise-slider`).forEach(sl => {
+    texts.push('Valore scala: ' + sl.value);
+  });
+
+  if (texts.length === 0) {
+    feedbackDiv.innerHTML = `<div class="ai-feedback show"><p style="color:var(--text2);font-size:14px">Compila almeno un campo prima di richiedere l'analisi.</p></div>`;
+    feedbackDiv.classList.add('show');
+    return;
+  }
+
+  // Save exercise data
+  state.exerciseData[dayNum] = { texts, timestamp: new Date().toISOString() };
+  saveState();
+
+  btn.disabled = true;
+  btn.innerHTML = 'Analisi in corso...';
+
+  feedbackDiv.classList.add('show');
+  feedbackDiv.innerHTML = `
+    <div class="ai-feedback-header">
+      <div class="ai-avatar">AI</div>
+      <div><div class="ai-name">Coach AI</div><div class="ai-label">Analisi in corso</div></div>
+    </div>
+    <div class="ai-loading"><div class="ai-dots"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div> Elaborando le tue risposte...</div>
+  `;
+
+  const systemPrompt = d.exercise.aiPrompt || "Sei un coach di riconquista esperto e psicologico. Analizza le risposte dell'utente e dai un feedback personalizzato, empatico ma diretto. Rispondi in italiano. Massimo 200 parole.";
+
+  const userContent = `Giorno ${dayNum} — ${d.title}\n\nRisposte dell'utente:\n${texts.join('\n\n')}`;
+
+  try {
+    const response = await fetch("/api/coach", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system: systemPrompt, message: userContent })
+    });
+
+    const data = await response.json();
+    const text = data.reply || "Risposta non disponibile. Riprova tra poco.";
+
+    feedbackDiv.innerHTML = `
+      <div class="ai-feedback-header">
+        <div class="ai-avatar">AI</div>
+        <div><div class="ai-name">Coach AI</div><div class="ai-label">Analisi personalizzata — Giorno ${dayNum}</div></div>
+      </div>
+      <div class="ai-text">${text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+    `;
+  } catch (err) {
+    feedbackDiv.innerHTML = `
+      <div class="ai-feedback-header">
+        <div class="ai-avatar">AI</div>
+        <div><div class="ai-name">Coach AI</div></div>
+      </div>
+      <div class="ai-text">Connessione temporaneamente non disponibile. Il tuo esercizio è stato salvato. Riprova tra qualche minuto.</div>
+    `;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Rianalizza <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+// ═══════════════════════════════════════════
+// MISSION
+// ═══════════════════════════════════════════
+function toggleMission(dayNum) {
+  const isDone = state.missionsDone.includes(dayNum);
+  if (isDone) {
+    state.missionsDone = state.missionsDone.filter(d => d !== dayNum);
+  } else {
+    state.missionsDone.push(dayNum);
+  }
+  saveState();
+  const check = document.getElementById(`mission-check-${dayNum}`);
+  const wrap = document.getElementById(`mission-wrap-${dayNum}`);
+  const label = wrap.querySelector('.mission-check-label');
+  const d = DAYS_DATA[dayNum - 1];
+  if (!isDone) {
+    check.classList.add('checked');
+    wrap.classList.add('done');
+    label.textContent = 'Missione completata ✓';
+  } else {
+    check.classList.remove('checked');
+    wrap.classList.remove('done');
+    label.textContent = d.mission.cta;
+  }
+}
+
+// ═══════════════════════════════════════════
+// COMPLETE DAY
+// ═══════════════════════════════════════════
+function completeDay(dayNum) {
+  if (!state.completedDays.includes(dayNum)) {
+    state.completedDays.push(dayNum);
+  }
+  // Unlock next day
+  state.unlockedDays = Math.max(state.unlockedDays, dayNum + 1);
+  saveState();
+
+  const btn = document.getElementById(`complete-btn-${dayNum}`);
+  if (btn) {
+    btn.classList.add('done');
+    btn.textContent = '✓ Completato';
+    btn.onclick = null;
+  }
+
+  updateProgress();
+  renderSidebar();
+
+  // Show celebration
+  const isLast = dayNum === 21;
+  showCelebration(dayNum, isLast);
+}
+
+function showCelebration(dayNum, isLast) {
+  const cel = document.getElementById('celebration');
+  const emojis = ['🎉','💪','🔥','⚡','🚀','🏆','✨'];
+  document.getElementById('cel-emoji').textContent = isLast ? '🌟' : emojis[dayNum % emojis.length];
+  document.getElementById('cel-title').textContent = isLast ? 'Hai completato il programma!' : `Giorno ${dayNum} completato!`;
+  document.getElementById('cel-sub').textContent = isLast
+    ? 'Genera il tuo report finale personalizzato. Hai fatto un lavoro straordinario.'
+    : `Stai costruendo qualcosa di reale. ${dayNum < 21 ? `Il giorno ${dayNum+1} è ora sbloccato.` : ''}`;
+  cel.classList.add('show');
+}
+
+function closeCelebration() {
+  document.getElementById('celebration').classList.remove('show');
+  const currentDay = state.currentDay;
+  if (currentDay === 21) {
+    renderFinalReport();
+  }
+}
+
+// ═══════════════════════════════════════════
+// VIDEO PLAYER
+// ═══════════════════════════════════════════
+function playVideo(dayNum) {
+  // Placeholder — sostituire con URL video reali da HeyGen
+  const box = document.getElementById(`video-${dayNum}`);
+  box.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg4);border-radius:var(--r);aspect-ratio:16/9;flex-direction:column;gap:12px">
+    <div style="font-size:32px">🎬</div>
+    <div style="font-size:14px;color:var(--text2)">Video Giorno ${dayNum} — in arrivo</div>
+    <div style="font-size:12px;color:var(--text3)">Carica il tuo video HeyGen qui</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// FINAL REPORT
+// ═══════════════════════════════════════════
+async function renderFinalReport() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <div class="report-screen fade-in">
+      <div class="welcome-eyebrow">Giorno 21 — Completato</div>
+      <h1 class="report-title">Il tuo<br><em>report finale</em></h1>
+      <p class="report-sub">L'AI ha analizzato tutte le tue risposte in questi 21 giorni. Genera adesso il tuo profilo psicologico completo e i prossimi passi.</p>
+      <button class="report-generate-btn" id="gen-report-btn" onclick="generateReport()">
+        Genera il mio report
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="report-content" id="report-content">
+        <div id="report-body"></div>
+        <button class="report-print-btn" onclick="window.print()">Stampa / Salva PDF</button>
+      </div>
+    </div>
+  `;
+}
+
+async function generateReport() {
+  const btn = document.getElementById('gen-report-btn');
+  btn.textContent = 'Generando il tuo report...';
+  btn.disabled = true;
+
+  // Collect all exercise data
+  const allData = [];
+  Object.entries(state.exerciseData).forEach(([day, data]) => {
+    if (data.texts && data.texts.length > 0) {
+      allData.push(`--- Giorno ${day} ---\n${data.texts.join('\n')}`);
+    }
+  });
+
+  const systemPrompt = DAYS_DATA[20].exercise.aiPrompt;
+  const userContent = `Dati del programma completo (21 giorni):\n\n${allData.join('\n\n') || 'Nessun dato disponibile'}`;
+
+  try {
+    const response = await fetch("/api/coach", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system: systemPrompt, message: userContent })
+    });
+
+    const data = await response.json();
+    const text = data.reply || "Report non disponibile.";
+
+    const sections = text.split('\n\n').filter(s => s.trim());
+    const reportBody = document.getElementById('report-body');
+    reportBody.innerHTML = sections.map(s => {
+      const lines = s.trim().split('\n');
+      const isTitle = lines[0].startsWith('#') || lines[0].includes(':') && lines[0].length < 60;
+      if (isTitle) {
+        return `<div class="report-section">
+          <div class="report-section-title">${lines[0].replace(/^#+\s*/, '')}</div>
+          <div class="report-section-text">${lines.slice(1).join('<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+        </div>`;
+      }
+      return `<div class="report-section"><div class="report-section-text">${s.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div></div>`;
+    }).join('');
+
+    document.getElementById('report-content').classList.add('show');
+  } catch(err) {
+    document.getElementById('report-body').innerHTML = `<div class="report-section"><div class="report-section-text">Errore nella generazione del report. Riprova tra qualche minuto.</div></div>`;
+    document.getElementById('report-content').classList.add('show');
+  }
+
+  btn.textContent = 'Rigenera report';
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════
+// MOBILE
+// ═══════════════════════════════════════════
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('mobile-open');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+loadState();
+if (state.accessCode && VALID_CODES.includes(state.accessCode)) {
+  enterApp();
+}
+</script>
+</body>
+</html>
